@@ -7,5 +7,28 @@
 </head>
 <body>
     
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
+    authDomain: "time-tracker-5dae5.firebaseapp.com",
+    projectId: "time-tracker-5dae5",
+    storageBucket: "time-tracker-5dae5.firebasestorage.app",
+    messagingSenderId: "478476863536",
+    appId: "1:478476863536:web:f19239a443267011b405f5",
+    measurementId: "G-2883329C3P"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
