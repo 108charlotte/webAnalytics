@@ -6,3 +6,6 @@ Chrome documentation on https://developer.chrome.com/docs/extensions/get-started
 Google intro to Firebase: https://www.youtube.com/watch?v=p9pgI3Mg-So
 
 Net Ninja Firebase Tutorial (whole series): https://www.youtube.com/watch?v=2yNyiW_41H8
+- super useful for setting up firebase, I followed it completely to integrate my app w/ firebase and its super great and step-by-step
+
+Pie Chart Using Javascript for beginners: https://www.youtube.com/watch?v=oeDeIEUcvGw

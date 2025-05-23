@@ -11,13 +11,24 @@ const firebaseConfig = {
   measurementId: "G-2883329C3P"
 };
 
+console.log("Script loaded")
+
 initializeApp(firebaseConfig);
 
 const db = getFirestore();
 
-const colRef = collection(db, "time-tracker"); 
+const colRef = collection(db, "website-times"); 
 
 getDocs(colRef)
   .then((snapshot) => {
-    console.log(snapshot.docs)
+    if (snapshot.empty) {
+      console.log("No matching documents.");
+    } else {
+      snapshot.docs.forEach((doc) => {
+        console.log(doc.id, "=>", doc.data());
+      });
+    }
+  })
+  .catch((err) => {
+    console.log("Error getting documents:", err.message)
   })
