@@ -10,4 +10,9 @@ Net Ninja Firebase Tutorial (whole series): https://www.youtube.com/watch?v=2yNy
 
 Pie Chart Using Javascript for beginners: https://www.youtube.com/watch?v=oeDeIEUcvGw
 
+And this documentation for the pie chart to adjust from premade one/customize for my own purposes: https://www.chartjs.org/docs/latest/charts/doughnut.html
+
 Used this stack overflow article to fix the errors with my firebase imports: https://stackoverflow.com/questions/66644782/uncaught-typeerror-failed-to-resolve-module-specifier-firebase-app-relative
+
+Used this stack overflow article to research ways to determine user active time on website: https://stackoverflow.com/questions/4667068/how-to-measure-a-time-spent-on-a-page
+
