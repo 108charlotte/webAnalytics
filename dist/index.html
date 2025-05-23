@@ -8,7 +8,36 @@
   </head>
   <body>
     <h1>Stats Snapshot</h1>
-    <canvas id="acquisitions"></canvas>
-    <script src="chart.js"></script>
+    <canvas id="acquisitions" width="400" height="200"></canvas>
+    <script>
+      const data = [
+        { year: 2010, count: 10 },
+        { year: 2011, count: 20 },
+        { year: 2012, count: 15 },
+        { year: 2013, count: 25 },
+        { year: 2014, count: 22 },
+        { year: 2015, count: 30 },
+        { year: 2016, count: 28 },
+      ];
+
+      const ctx = document.getElementById('acquisitions').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.map(row => row.year),
+          datasets: [{
+            label: 'Acquisitions by year',
+            data: data.map(row => row.count),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    </script>
   </body>
 </html>
