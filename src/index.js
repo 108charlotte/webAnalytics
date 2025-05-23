@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -21,14 +21,5 @@ const colRef = collection(db, "website-times");
 
 getDocs(colRef)
   .then((snapshot) => {
-    if (snapshot.empty) {
-      console.log("No matching documents.");
-    } else {
-      snapshot.docs.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
-      });
-    }
-  })
-  .catch((err) => {
-    console.log("Error getting documents:", err.message)
+    console.log(snapshot.docs)
   })

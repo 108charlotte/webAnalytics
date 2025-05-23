@@ -9,3 +9,5 @@ Net Ninja Firebase Tutorial (whole series): https://www.youtube.com/watch?v=2yNy
 - super useful for setting up firebase, I followed it completely to integrate my app w/ firebase and its super great and step-by-step
 
 Pie Chart Using Javascript for beginners: https://www.youtube.com/watch?v=oeDeIEUcvGw
+
+Used this stack overflow article to fix the errors with my firebase imports: https://stackoverflow.com/questions/66644782/uncaught-typeerror-failed-to-resolve-module-specifier-firebase-app-relative
