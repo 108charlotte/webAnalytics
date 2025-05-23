@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -19,7 +19,40 @@ const db = getFirestore();
 
 const colRef = collection(db, "website-times"); 
 
-getDocs(colRef)
-  .then((snapshot) => {
-    console.log(snapshot.docs)
-  })
+onSnapshot(colRef, (snapshot) => {
+  let websites = []; 
+  const websiteTimeDict = {}
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data()
+      const name = data.websiteName
+      const time = data.activeMins || 0; 
+      if (websiteTimeDict[name]) {
+        websiteTimeDict[name] += time
+      } else {
+        websiteTimeDict[name] = time
+      }
+      websites.push({ ...doc.data(), id: doc.id })
+    })
+    console.log(websites)
+    console.log(websiteTimeDict)
+
+    const chartData = []
+    for (const [key, value] of Object.entries(websiteTimeDict)) {
+      chartData.push({ name: key, count: value });
+    }
+
+      const ctx = document.getElementById('acquisitions').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: chartData.map(row => row.name),
+          datasets: [{
+            label: 'Minutes',
+            data: chartData.map(row => row.count),
+          }]
+        },
+        options: {
+          responsive: true,
+        }
+      })
+    })
