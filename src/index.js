@@ -1,5 +1,8 @@
-import { initializeApp } from "../node_modules/firebase/app";
-  import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from "../node_modules/firebase/firestore";
+import { initializeApp } from 'firebase/app'
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from 'firebase/firestore'
+import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'chart.js'
+
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -49,6 +52,10 @@ onSnapshot(colRef, (snapshot) => {
           datasets: [{
             label: 'Minutes',
             data: chartData.map(row => row.count),
+            backgroundColor: [
+              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+              '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
+            ],
           }]
         },
         options: {
