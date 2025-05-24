@@ -17,3 +17,5 @@ Used this stack overflow article to fix the errors with my firebase imports: htt
 Used this stack overflow article to research ways to determine user active time on website: https://stackoverflow.com/questions/4667068/how-to-measure-a-time-spent-on-a-page
 
 This is the tutorial I used to set up webpack: https://www.youtube.com/watch?v=IZGNcSuwBZs
+
+Simple explanation of chrome tab events (doesn't go in depth, just covers several of them): https://www.youtube.com/watch?app=desktop&v=olLXAFJiL6Q&utm_source=chatgpt.com

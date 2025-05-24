@@ -7,7 +7,9 @@
   "permissions": [
     "tabs",
     "storage",
-    "activeTab"
+    "activeTab", 
+    "idle", 
+    "windows"
   ],
 
   "host_permissions": [
@@ -18,7 +20,13 @@
     "default_popup": "dist/index.html"
   }, 
 
+  "background": {
+    "service_worker": "background.js"
+  }, 
+
   "icons": {
-    "16": "icons/icon.png"
+    "16": "icons/icon.png", 
+    "48": "icons/icon.png", 
+    "128": "icons/icon.png"
   }
 }
