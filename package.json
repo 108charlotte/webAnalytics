@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack --mode development",
-    "start": "webpack serve"
+    "start": "npx webpack serve"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +25,9 @@
     "@babel/core": "^7.27.1",
     "@babel/preset-env": "^7.27.2",
     "babel-loader": "^10.0.0",
+    "chart.js": "^4.4.9",
     "firebase": "^11.8.1",
+    "firestore": "^1.1.6",
     "html-webpack-plugin": "^5.6.3"
   }
 }

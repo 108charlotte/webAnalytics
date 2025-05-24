@@ -1,3 +1,5 @@
+console.log("Webpack is working")
+
 import { initializeApp } from 'firebase/app'
 import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from 'firebase/firestore'
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'chart.js'
@@ -18,11 +20,18 @@ console.log("Script loaded")
 
 initializeApp(firebaseConfig);
 
+console.log("Firebase initialized")
+
 const db = getFirestore();
 
-const colRef = collection(db, "website-times"); 
+console.log("Firestore initialized")
+
+const colRef = collection(db, "website-times")
+
+console.log("Collection reference created")
 
 onSnapshot(colRef, (snapshot) => {
+  console.log("Snapshot received")
   let websites = []; 
   const websiteTimeDict = {}
     snapshot.docs.forEach((doc) => {
