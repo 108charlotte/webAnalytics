@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { initializeApp } from "/node_modules/firebase/app";
+  import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from "/node_modules/firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
