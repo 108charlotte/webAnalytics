@@ -16,7 +16,7 @@
 
   "action": {
     "default_popup": "dist/index.html"
-  },
+  }, 
 
   "icons": {
     "16": "icons/icon.png"
