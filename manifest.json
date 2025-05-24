@@ -14,10 +14,6 @@
     "<all_urls>"
   ],
 
-  "background": {
-    "service_worker": "dist/bundle.js"
-  },
-
   "action": {
     "default_popup": "dist/index.html"
   }
