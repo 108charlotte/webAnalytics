@@ -5,7 +5,7 @@
   "main": "bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack --mode development",
+    "build": "rm -r dist && npx webpack --mode development",
     "start": "npx webpack serve"
   },
   "keywords": [],

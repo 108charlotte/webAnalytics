@@ -42990,14 +42990,10 @@ document.addEventListener('DOMContentLoaded', function () {
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
     var chartData = Object.entries(websiteTimeDict).map([name, count]);
     var data = {
-      labels: chartData.map(function (row) {
-        return row.name;
-      }),
+      labels: Object.keys(websiteTimeDict),
       datasets: [{
         label: 'Minutes',
-        data: chartData.map(function (row) {
-          return row.count;
-        }),
+        data: Object.values(websiteTimeDict),
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
       }]
     };
