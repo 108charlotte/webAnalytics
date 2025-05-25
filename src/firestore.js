@@ -33,9 +33,14 @@ export function onWebsiteTimesUpdated(callback) {
         const data = doc.data()
         const name = data.websiteName
         let startDate = data.setActive.toDate()
-        let endDate = data.setIdle.toDate() || null
+        let endDate = data.setIdle?.toDate()
+        if (endDate && startDate && endDate > startDate) {
+          let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
+          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
+        }
+
         if (endDate) {
-          durationInMinutes = Math.round(((endDate - startDate)/1000)/60)
+          let durationInMinutes = Math.round(((endDate - startDate)/1000)/60)
           if (websiteTimeDict[name]) {
             websiteTimeDict[name] += durationInMinutes
           }
