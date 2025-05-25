@@ -37,7 +37,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
       websiteName: websiteName,
       timestamp: Date.now()
     };
-    newTabToFirestore(data);
+    // newTabToFirestore(data)
   });
 });
 
@@ -72,7 +72,7 @@ function userActive() {
       websiteName: websiteName,
       timestamp: Date.now()
     };
-    sendToFirestore(data);
+    // sendToFirestore(data)
   });
 }
 function userIdle() {}
