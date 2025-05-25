@@ -21,3 +21,5 @@ This is the tutorial I used to set up webpack: https://www.youtube.com/watch?v=I
 Simple explanation of chrome tab events (doesn't go in depth, just covers several of them): https://www.youtube.com/watch?v=olLXAFJiL6Q
 
 How to calculate minutes between two dates: https://www.geeksforgeeks.org/how-to-calculate-minutes-between-two-dates-in-javascript/
+
+stack overflow article which showed me how to compare two dates to determine if they fall on the same day: https://stackoverflow.com/questions/43855166/how-to-tell-if-two-dates-are-in-the-same-day-or-in-the-same-hour

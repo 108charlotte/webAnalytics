@@ -42875,6 +42875,12 @@ var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, 
 console.log("Collection reference created");
 var websites = [];
 var websiteTimeDict = {};
+
+// see resources for where I got this from (stack overflow)
+function onToday(date) {
+  var today = new Date();
+  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+}
 function onWebsiteTimesUpdated(callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
@@ -42883,6 +42889,8 @@ function onWebsiteTimesUpdated(callback) {
       var data = doc.data();
       var name = data.websiteName;
       var startDate = data.setActive.toDate();
+      var today = new Date();
+      if (onToday(startDate)) {}
       var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
       if (endDate && startDate && endDate > startDate) {
         var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);

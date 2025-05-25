@@ -26,6 +26,12 @@ console.log("Collection reference created")
 let websites = []; 
 const websiteTimeDict = {}
 
+// see resources for where I got this from (stack overflow)
+function onToday(date) {
+  const today = new Date()
+  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()
+}
+
 export function onWebsiteTimesUpdated(callback) {
   onSnapshot(colRef, (snapshot) => {
     console.log("Snapshot received")
@@ -33,13 +39,15 @@ export function onWebsiteTimesUpdated(callback) {
         const data = doc.data()
         const name = data.websiteName
         let startDate = data.setActive.toDate()
-        let endDate = data.setIdle?.toDate()
-        if (endDate && startDate && endDate > startDate) {
-          let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
-          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
-        }
-        websites.push({ ...doc.data(), id: doc.id })
-      })
+        let today = new Date()
+        if (onToday(startDate)) {}
+          let endDate = data.setIdle?.toDate()
+          if (endDate && startDate && endDate > startDate) {
+            let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
+            websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
+          }
+          websites.push({ ...doc.data(), id: doc.id })
+        })
     console.log(websites)
     console.log(websiteTimeDict)
     callback(websiteTimeDict)
