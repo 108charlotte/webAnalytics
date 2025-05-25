@@ -26,21 +26,22 @@ console.log("Collection reference created")
 let websites = []; 
 const websiteTimeDict = {}
 
-onSnapshot(colRef, (snapshot) => {
-  console.log("Snapshot received")
-    snapshot.docs.forEach((doc) => {
-      const data = doc.data()
-      const name = data.websiteName
-      const time = data.activeMins || 0; 
-      if (websiteTimeDict[name]) {
-        websiteTimeDict[name] += time
-      } else {
-        websiteTimeDict[name] = time
-      }
-      websites.push({ ...doc.data(), id: doc.id })
-    })
-  console.log(websites)
-  console.log(websiteTimeDict)
-})
-
-export { websiteTimeDict }
+export function onWebsiteTimesUpdated(callback) {
+  onSnapshot(colRef, (snapshot) => {
+    console.log("Snapshot received")
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data()
+        const name = data.websiteName
+        const time = data.activeMins || 0; 
+        if (websiteTimeDict[name]) {
+          websiteTimeDict[name] += time
+        } else {
+          websiteTimeDict[name] = time
+        }
+        websites.push({ ...doc.data(), id: doc.id })
+      })
+    console.log(websites)
+    console.log(websiteTimeDict)
+    callback(websiteTimeDict)
+  })
+}

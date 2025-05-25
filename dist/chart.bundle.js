@@ -42846,7 +42846,7 @@ const unwrap = (value) => reverseTransformCache.get(value);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   websiteTimeDict: () => (/* binding */ websiteTimeDict)
+/* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated)
 /* harmony export */ });
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/esm/index.esm.js");
 /* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/firestore */ "./node_modules/firebase/firestore/dist/esm/index.esm.js");
@@ -42875,25 +42875,27 @@ var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, 
 console.log("Collection reference created");
 var websites = [];
 var websiteTimeDict = {};
-(0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
-  console.log("Snapshot received");
-  snapshot.docs.forEach(function (doc) {
-    var data = doc.data();
-    var name = data.websiteName;
-    var time = data.activeMins || 0;
-    if (websiteTimeDict[name]) {
-      websiteTimeDict[name] += time;
-    } else {
-      websiteTimeDict[name] = time;
-    }
-    websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
-      id: doc.id
-    }));
+function onWebsiteTimesUpdated(callback) {
+  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
+    console.log("Snapshot received");
+    snapshot.docs.forEach(function (doc) {
+      var data = doc.data();
+      var name = data.websiteName;
+      var time = data.activeMins || 0;
+      if (websiteTimeDict[name]) {
+        websiteTimeDict[name] += time;
+      } else {
+        websiteTimeDict[name] = time;
+      }
+      websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
+        id: doc.id
+      }));
+    });
+    console.log(websites);
+    console.log(websiteTimeDict);
+    callback(websiteTimeDict);
   });
-  console.log(websites);
-  console.log(websiteTimeDict);
-});
-
+}
 
 /***/ })
 
@@ -42972,45 +42974,46 @@ var __webpack_exports__ = {};
   !*** ./src/chart.js ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/chart.js");
-/* harmony import */ var _firestore_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./firestore.js */ "./src/firestore.js");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/chart.js");
+/* harmony import */ var _firestore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./firestore */ "./src/firestore.js");
 
-chart_js__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chart_js__WEBPACK_IMPORTED_MODULE_0__.DoughnutController, chart_js__WEBPACK_IMPORTED_MODULE_0__.ArcElement, chart_js__WEBPACK_IMPORTED_MODULE_0__.Tooltip, chart_js__WEBPACK_IMPORTED_MODULE_0__.Legend, chart_js__WEBPACK_IMPORTED_MODULE_0__.Title);
 
-var chartData = [];
-for (var _i = 0, _Object$entries = Object.entries(_firestore_js__WEBPACK_IMPORTED_MODULE_1__.websiteTimeDict); _i < _Object$entries.length; _i++) {
-  var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-    key = _Object$entries$_i[0],
-    value = _Object$entries$_i[1];
-  chartData.push({
-    name: key,
-    count: value
-  });
-}
-var ctx = document.getElementById('acquisitions').getContext('2d');
-new chart_js__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: chartData.map(function (row) {
-      return row.name;
-    }),
-    datasets: [{
-      label: 'Minutes',
-      data: chartData.map(function (row) {
-        return row.count;
-      }),
-      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
-    }]
-  },
-  options: {
-    responsive: true
+chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.register(chart_js__WEBPACK_IMPORTED_MODULE_1__.DoughnutController, chart_js__WEBPACK_IMPORTED_MODULE_1__.ArcElement, chart_js__WEBPACK_IMPORTED_MODULE_1__.Tooltip, chart_js__WEBPACK_IMPORTED_MODULE_1__.Legend, chart_js__WEBPACK_IMPORTED_MODULE_1__.Title);
+document.addEventListener('DOMContentLoaded', function () {
+  var canvas = document.getElementById('aquisitions');
+  if (!canvas) {
+    console.error("Canvas element with id 'aquisitions' not found.");
+    return;
   }
+  var ctx = canvas.getContext('2d');
+  var chartInstance = null;
+  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
+    var chartData = Object.entries(websiteTimeDict).map([name, count]);
+    var data = {
+      labels: chartData.map(function (row) {
+        return row.name;
+      }),
+      datasets: [{
+        label: 'Minutes',
+        data: chartData.map(function (row) {
+          return row.count;
+        }),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
+      }]
+    };
+    if (chartInstance) {
+      chartInstance.data = data;
+      chartInstance.update();
+    } else {
+      chartInstance = new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: {
+          responsive: true
+        }
+      });
+    }
+  });
 });
 console.log("Chart.js initialized");
 })();

@@ -27809,7 +27809,7 @@ var __webpack_exports__ = {};
   \**************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   websiteTimeDict: () => (/* binding */ websiteTimeDict)
+/* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated)
 /* harmony export */ });
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/esm/index.esm.js");
 /* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/firestore */ "./node_modules/firebase/firestore/dist/esm/index.esm.js");
@@ -27838,25 +27838,27 @@ var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, 
 console.log("Collection reference created");
 var websites = [];
 var websiteTimeDict = {};
-(0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
-  console.log("Snapshot received");
-  snapshot.docs.forEach(function (doc) {
-    var data = doc.data();
-    var name = data.websiteName;
-    var time = data.activeMins || 0;
-    if (websiteTimeDict[name]) {
-      websiteTimeDict[name] += time;
-    } else {
-      websiteTimeDict[name] = time;
-    }
-    websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
-      id: doc.id
-    }));
+function onWebsiteTimesUpdated(callback) {
+  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
+    console.log("Snapshot received");
+    snapshot.docs.forEach(function (doc) {
+      var data = doc.data();
+      var name = data.websiteName;
+      var time = data.activeMins || 0;
+      if (websiteTimeDict[name]) {
+        websiteTimeDict[name] += time;
+      } else {
+        websiteTimeDict[name] = time;
+      }
+      websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
+        id: doc.id
+      }));
+    });
+    console.log(websites);
+    console.log(websiteTimeDict);
+    callback(websiteTimeDict);
   });
-  console.log(websites);
-  console.log(websiteTimeDict);
-});
-
+}
 })();
 
 /******/ })()
