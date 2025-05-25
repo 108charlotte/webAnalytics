@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, where } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -53,4 +53,24 @@ export function onWebsiteTimesUpdated(callback) {
     console.log(websiteTimeDict)
     callback(websiteTimeDict)
   })
+}
+
+export function newTabToFirestore(data) {
+  addDoc(colRef, {
+    websiteName: data.websiteName,
+    setActive: new Date(data.timestamp),
+    setIdle: null
+  })
+}
+
+export async function updateTabToFirestore(data) {
+  const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
+  const docRef = await getDocs(nearestIncompleteEntryWithSameName)
+  if (!docRef.empty) {
+    updateDoc(docRef, {
+      setIdle: new Date(data.endDate)
+    })
+    console.log("Updated entry with website name:", data.websiteName)
+  }
+  console.log("Could not find an entry to update")
 }
