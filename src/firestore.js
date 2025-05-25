@@ -23,10 +23,11 @@ const colRef = collection(db, "website-times")
 
 console.log("Collection reference created")
 
+let websites = []; 
+const websiteTimeDict = {}
+
 onSnapshot(colRef, (snapshot) => {
   console.log("Snapshot received")
-  let websites = []; 
-  const websiteTimeDict = {}
     snapshot.docs.forEach((doc) => {
       const data = doc.data()
       const name = data.websiteName
@@ -42,10 +43,4 @@ onSnapshot(colRef, (snapshot) => {
   console.log(websiteTimeDict)
 })
 
-function addToFirestore(data) {
-  
-}
-
-function endSession(data) {
-
-}
+export { websiteTimeDict }

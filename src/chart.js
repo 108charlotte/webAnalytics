@@ -2,6 +2,8 @@ import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'c
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
+import { websiteTimeDict } from './firestore.js'
+
 const chartData = []
 for (const [key, value] of Object.entries(websiteTimeDict)) {
     chartData.push({ name: key, count: value });

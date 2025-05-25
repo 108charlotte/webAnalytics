@@ -1,17 +1,30 @@
+console.log('chrome.idle:', chrome.idle)
+
 chrome.idle.setDetectionInterval(60)
+
+let lastActiveTab = null
+let lastActiveTabTimestamp = null
+let lastWindowId = null
 
 // checks when the user is active or idle
 chrome.idle.onStateChanged.addListener((newState) => {
     if (newState === 'active') {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            if (tabs.length > 0) {
+                lastActiveTab = tabs[0]
+                lastActiveTabTimestamp = Date.now()
+                lastWindowId = lastActiveTab.windowId
+            }
+        })
         userActive()
     } else if (newState === 'idle' || newState === 'locked') {
-        userIdle()
+       userIdle()
     }
 })
 
 // checks when the user switches tabs
 chrome.tabs.onActivated.addListener((activeInfo) => {
-    // adds new entry to firebase
+    // adds old tab to firebase
     getActiveTab((tab) => {
         const url = new URL(tab.url)
         const websiteName = url.hostname.replace('www.', '')

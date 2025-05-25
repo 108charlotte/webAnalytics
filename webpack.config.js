@@ -4,13 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        bundle: './src/index.js', 
+        firebase: './src/firestore.js', 
         background: './src/background.js',
+        chart: './src/chart.js',
     },
     devtool: 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',
+        filename: '[name].bundle.js',
     }, 
     devServer: {
         static: './dist',
