@@ -27927,6 +27927,10 @@ chrome.idle.setDetectionInterval(60);
 var lastActiveTab = null;
 var lastActiveTabTimestamp = null;
 var lastWindowId = null;
+
+// Error: Error handling response: TypeError: Cannot read properties of undefined (reading 'replace')
+// at addOldTabToFirestore (chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27933:47)
+// at chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27990:11Understand this error
 function addOldTabToFirestore(message) {
   if (lastActiveTab) {
     var lastData = {
