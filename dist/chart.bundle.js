@@ -42980,9 +42980,9 @@ __webpack_require__.r(__webpack_exports__);
 
 chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.register(chart_js__WEBPACK_IMPORTED_MODULE_1__.DoughnutController, chart_js__WEBPACK_IMPORTED_MODULE_1__.ArcElement, chart_js__WEBPACK_IMPORTED_MODULE_1__.Tooltip, chart_js__WEBPACK_IMPORTED_MODULE_1__.Legend, chart_js__WEBPACK_IMPORTED_MODULE_1__.Title);
 document.addEventListener('DOMContentLoaded', function () {
-  var canvas = document.getElementById('aquisitions');
+  var canvas = document.getElementById('acquisitions');
   if (!canvas) {
-    console.error("Canvas element with id 'aquisitions' not found.");
+    console.error("Canvas element with id 'acquisitions' not found.");
     return;
   }
   var ctx = canvas.getContext('2d');
