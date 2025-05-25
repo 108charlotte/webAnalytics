@@ -4,9 +4,9 @@ import { onWebsiteTimesUpdated } from './firestore';
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
 document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('aquisitions')
+    const canvas = document.getElementById('acquisitions')
     if (!canvas) {
-        console.error("Canvas element with id 'aquisitions' not found.");
+        console.error("Canvas element with id 'acquisitions' not found.");
         return;
     }
     const ctx = canvas.getContext('2d')
