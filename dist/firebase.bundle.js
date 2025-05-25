@@ -27851,14 +27851,6 @@ function onWebsiteTimesUpdated(callback) {
         var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
         websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
       }
-      if (endDate) {
-        var _durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
-        if (websiteTimeDict[name]) {
-          websiteTimeDict[name] += _durationInMinutes;
-        } else {
-          websiteTimeDict[name] = _durationInMinutes;
-        }
-      }
       websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
         id: doc.id
       }));
