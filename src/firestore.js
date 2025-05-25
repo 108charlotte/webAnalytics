@@ -32,11 +32,16 @@ export function onWebsiteTimesUpdated(callback) {
       snapshot.docs.forEach((doc) => {
         const data = doc.data()
         const name = data.websiteName
-        const time = data.activeMins || 0; 
-        if (websiteTimeDict[name]) {
-          websiteTimeDict[name] += time
-        } else {
-          websiteTimeDict[name] = time
+        let startDate = data.setActive.toDate()
+        let endDate = data.setIdle.toDate() || null
+        if (endDate) {
+          durationInMinutes = Math.round(((endDate - startDate)/1000)/60)
+          if (websiteTimeDict[name]) {
+            websiteTimeDict[name] += durationInMinutes
+          }
+          else {
+            websiteTimeDict[name] = durationInMinutes
+          }
         }
         websites.push({ ...doc.data(), id: doc.id })
       })

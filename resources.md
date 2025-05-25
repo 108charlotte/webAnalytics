@@ -18,4 +18,6 @@ Used this stack overflow article to research ways to determine user active time 
 
 This is the tutorial I used to set up webpack: https://www.youtube.com/watch?v=IZGNcSuwBZs
 
-Simple explanation of chrome tab events (doesn't go in depth, just covers several of them): https://www.youtube.com/watch?app=desktop&v=olLXAFJiL6Q&utm_source=chatgpt.com
+Simple explanation of chrome tab events (doesn't go in depth, just covers several of them): https://www.youtube.com/watch?v=olLXAFJiL6Q
+
+How to calculate minutes between two dates: https://www.geeksforgeeks.org/how-to-calculate-minutes-between-two-dates-in-javascript/
