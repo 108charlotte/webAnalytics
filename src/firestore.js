@@ -38,16 +38,6 @@ export function onWebsiteTimesUpdated(callback) {
           let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
           websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
         }
-
-        if (endDate) {
-          let durationInMinutes = Math.round(((endDate - startDate)/1000)/60)
-          if (websiteTimeDict[name]) {
-            websiteTimeDict[name] += durationInMinutes
-          }
-          else {
-            websiteTimeDict[name] = durationInMinutes
-          }
-        }
         websites.push({ ...doc.data(), id: doc.id })
       })
     console.log(websites)
