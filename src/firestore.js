@@ -40,14 +40,15 @@ export function onWebsiteTimesUpdated(callback) {
         const name = data.websiteName
         let startDate = data.setActive.toDate()
         let today = new Date()
-        if (onToday(startDate)) {}
+        if (onToday(startDate)) {
           let endDate = data.setIdle?.toDate()
           if (endDate && startDate && endDate > startDate) {
             let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
             websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
           }
           websites.push({ ...doc.data(), id: doc.id })
-        })
+      }
+    })
     console.log(websites)
     console.log(websiteTimeDict)
     callback(websiteTimeDict)
