@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let chartInstance = null
 
     onWebsiteTimesUpdated((websiteTimeDict) => {
-        const chartData = Object.entries(websiteTimeDict).map(([name, count]))
-
         const data = {
             labels: Object.keys(websiteTimeDict),
             datasets: [{

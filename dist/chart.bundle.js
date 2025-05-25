@@ -42988,7 +42988,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var ctx = canvas.getContext('2d');
   var chartInstance = null;
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
-    var chartData = Object.entries(websiteTimeDict).map([name, count]);
     var data = {
       labels: Object.keys(websiteTimeDict),
       datasets: [{
