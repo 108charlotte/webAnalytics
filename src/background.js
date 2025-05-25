@@ -32,7 +32,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             websiteName,
             timestamp: Date.now(),
         }
-        newTabToFirestore(data)
+        // newTabToFirestore(data)
     })
 })
 
@@ -66,7 +66,7 @@ function userActive() {
             websiteName,
             timestamp: Date.now(),
         }
-        sendToFirestore(data)
+        // sendToFirestore(data)
     })
 }
 
