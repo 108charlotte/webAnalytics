@@ -27990,23 +27990,20 @@ chrome.idle.setDetectionInterval(60);
 var lastActiveTab = null;
 var lastActiveTabTimestamp = null;
 var lastWindowId = null;
-function addOldTabToFirestore(message) {
-  if (lastActiveTab && lastActiveTab.url) {
-    var hostname;
-    try {
-      hostname = new URL(lastActiveTab.url).hostname.replace('www.', '');
-    } catch (e) {
-      console.warn('Error parsing URL:', lastActiveTab.url, e);
-      return;
-    }
-    var lastData = {
-      websiteName: hostname,
-      endDate: new Date()
-    };
-    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(lastData);
-    console.log(message, lastActiveTab);
-  }
+var pendingTabData = null;
+
+// Call this whenever you want to "queue" an update
+function queueTabUpdate(data) {
+  pendingTabData = data;
 }
+
+// Periodically flush the pending update to Firestore
+setInterval(function () {
+  if (pendingTabData) {
+    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(pendingTabData);
+    pendingTabData = null;
+  }
+}, 5000);
 
 // when the user becomes active, get the newly active tab and export to firebase with start time at that time
 chrome.tabs.onActivated.addListener(function (activeInfo) {
@@ -28072,6 +28069,23 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
     });
   }
 });
+function addOldTabToFirestore(message) {
+  if (lastActiveTab && lastActiveTab.url) {
+    var hostname;
+    try {
+      hostname = new URL(lastActiveTab.url).hostname.replace('www.', '');
+    } catch (e) {
+      console.warn('Error parsing URL:', lastActiveTab.url, e);
+      return;
+    }
+    var lastData = {
+      websiteName: hostname,
+      endDate: new Date()
+    };
+    queueTabUpdate(lastData); // <-- Use queue instead of direct update
+    console.log(message, lastActiveTab);
+  }
+}
 })();
 
 /******/ })()
