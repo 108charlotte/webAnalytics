@@ -42881,9 +42881,13 @@ var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();
 console.log("Firestore initialized");
 var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, "website-times");
 console.log("Collection reference created");
-clearCollection("website-times").then(function () {
-  console.log("❗️ Collection cleared");
-});
+
+/*
+clearCollection("website-times").then(() => {
+  console.log("❗️ Collection cleared")
+})
+  */
+
 var websites = [];
 var websiteTimeDict = {};
 

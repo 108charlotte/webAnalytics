@@ -23,9 +23,11 @@ const colRef = collection(db, "website-times")
 
 console.log("Collection reference created")
 
+/*
 clearCollection("website-times").then(() => {
   console.log("❗️ Collection cleared")
 })
+  */
 
 let websites = []; 
 const websiteTimeDict = {}
