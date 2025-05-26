@@ -27990,10 +27990,6 @@ chrome.idle.setDetectionInterval(60);
 var lastActiveTab = null;
 var lastActiveTabTimestamp = null;
 var lastWindowId = null;
-
-// Error: Error handling response: TypeError: Cannot read properties of undefined (reading 'replace')
-// at addOldTabToFirestore (chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27933:47)
-// at chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27990:11Understand this error
 function addOldTabToFirestore(message) {
   if (lastActiveTab && lastActiveTab.url) {
     var hostname;
@@ -28015,6 +28011,7 @@ function addOldTabToFirestore(message) {
 // when the user becomes active, get the newly active tab and export to firebase with start time at that time
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
+    addOldTabToFirestore('Updated last active tab before switching to new one: ');
     var url = new URL(tab.url);
     var websiteName = url.hostname.replace('www.', '');
     var data = {
@@ -28032,7 +28029,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
   });
 });
 
-// when the user becomes idle or switches windows, update the end date of the firebase entry for the last active tab (need to store somewhere)
+// when the user becomes idle, update the end date of the firebase entry for the last active tab (need to store somewhere)
 chrome.idle.onStateChanged.addListener(function (newState) {
   if (newState === 'idle' || newState === 'locked') {
     addOldTabToFirestore('User is idle, updating last active tab: ');
@@ -28062,6 +28059,7 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
         var _lastActiveTab;
         var activeTab = tabs[0];
         if (activeTab.id !== ((_lastActiveTab = lastActiveTab) === null || _lastActiveTab === void 0 ? void 0 : _lastActiveTab.id)) {
+          (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)('User switched to a new window, updating last active tab: ');
           addOldTabToFirestore('User switched to a new window, updating last active tab: ');
           lastActiveTab = activeTab;
           lastActiveTabTimestamp = Date.now();
