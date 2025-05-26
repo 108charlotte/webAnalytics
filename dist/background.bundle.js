@@ -28028,6 +28028,7 @@ setInterval(function () {
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
     if (!lastActiveTab || tab.id !== lastActiveTab.id) {
+      addOldTabToFirestore('User switched to a new tab, updating last active tab: ');
       if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
         var url = new URL(tab.url);
         var websiteName = url.hostname.replace('www.', '');
