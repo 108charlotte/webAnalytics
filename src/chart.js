@@ -22,10 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (messageDiv) {
                 messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data"
                 messageDiv.style.display = 'block'
+                canvas.style.display = 'none'
             }
         } else {
             if (messageDiv) {
                 messageDiv.style.display = 'none'
+                canvas.style.display = 'block'
             }
         }
         const data = {
