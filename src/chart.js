@@ -18,16 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
         const messageDiv = document.getElementById('chart-message')
+
+        const clearButton = document.getElementById('clear-data-button')
+
         if (allTooSmall) {
             if (messageDiv) {
                 messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data"
                 messageDiv.style.display = 'block'
                 canvas.style.display = 'none'
+                clearButton.style.display = 'none'
             }
         } else {
             if (messageDiv) {
                 messageDiv.style.display = 'none'
                 canvas.style.display = 'block'
+                clearButton.style.display = 'block'
             }
         }
         const data = {
@@ -56,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // button management
 
     // clear data (reset database from firestore)
-    document.getElementById('clear-data-button')?.addEventListener('click', async () => {
+    clearButton.addEventListener('click', async () => {
         if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
         await clearCollection("website-times")
         console.log("Data cleared")

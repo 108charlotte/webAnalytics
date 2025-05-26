@@ -43118,7 +43118,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 
 chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.register(chart_js__WEBPACK_IMPORTED_MODULE_1__.DoughnutController, chart_js__WEBPACK_IMPORTED_MODULE_1__.ArcElement, chart_js__WEBPACK_IMPORTED_MODULE_1__.Tooltip, chart_js__WEBPACK_IMPORTED_MODULE_1__.Legend, chart_js__WEBPACK_IMPORTED_MODULE_1__.Title);
 document.addEventListener('DOMContentLoaded', function () {
-  var _document$getElementB;
   var canvas = document.getElementById('acquisitions');
   if (!canvas) {
     console.error("Canvas element with id 'acquisitions' not found.");
@@ -43133,16 +43132,19 @@ document.addEventListener('DOMContentLoaded', function () {
       return v < minThreshold;
     });
     var messageDiv = document.getElementById('chart-message');
+    var clearButton = document.getElementById('clear-data-button');
     if (allTooSmall) {
       if (messageDiv) {
         messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data";
         messageDiv.style.display = 'block';
         canvas.style.display = 'none';
+        clearButton.style.display = 'none';
       }
     } else {
       if (messageDiv) {
         messageDiv.style.display = 'none';
         canvas.style.display = 'block';
+        clearButton.style.display = 'block';
       }
     }
     var data = {
@@ -43170,7 +43172,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // button management
 
   // clear data (reset database from firestore)
-  (_document$getElementB = document.getElementById('clear-data-button')) === null || _document$getElementB === void 0 || _document$getElementB.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+  clearButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
