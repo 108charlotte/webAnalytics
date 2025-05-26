@@ -21,7 +21,8 @@
   }, 
 
   "background": {
-    "service_worker": "./dist/background.bundle.js"
+    "service_worker": "./dist/background.bundle.js", 
+    "type": "module"
   }, 
 
   "icons": {
