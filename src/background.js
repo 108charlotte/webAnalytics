@@ -75,7 +75,6 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
             if (tabs.length > 0) {
                 const activeTab = tabs[0]
                 if (activeTab.id !== lastActiveTab?.id) {
-                    updateTabToFirestore('User switched to a new window, updating last active tab: ')
                     addOldTabToFirestore('User switched to a new window, updating last active tab: ')
                     lastActiveTab = activeTab
                     lastActiveTabTimestamp = new Date()

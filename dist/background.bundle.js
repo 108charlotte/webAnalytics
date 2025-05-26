@@ -28079,7 +28079,6 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
         var _lastActiveTab;
         var activeTab = tabs[0];
         if (activeTab.id !== ((_lastActiveTab = lastActiveTab) === null || _lastActiveTab === void 0 ? void 0 : _lastActiveTab.id)) {
-          (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)('User switched to a new window, updating last active tab: ');
           addOldTabToFirestore('User switched to a new window, updating last active tab: ');
           lastActiveTab = activeTab;
           lastActiveTabTimestamp = new Date();
