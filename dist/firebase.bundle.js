@@ -27891,7 +27891,7 @@ function _updateTabToFirestore() {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           // this line is causing an error when trying to update firestore database
-          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), limit(1));
+          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
           _context.next = 3;
           return getDocs(nearestIncompleteEntryWithSameName);
         case 3:
