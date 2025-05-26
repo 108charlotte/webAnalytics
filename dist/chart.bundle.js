@@ -43170,7 +43170,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // button management
 
   // clear data (reset database from firestore)
-  (_document$getElementB = document.getElementById('clear-data')) === null || _document$getElementB === void 0 || _document$getElementB.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+  (_document$getElementB = document.getElementById('clear-data-button')) === null || _document$getElementB === void 0 || _document$getElementB.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:

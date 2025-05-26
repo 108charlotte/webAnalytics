@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // button management
 
     // clear data (reset database from firestore)
-    document.getElementById('clear-data')?.addEventListener('click', async () => {
+    document.getElementById('clear-data-button')?.addEventListener('click', async () => {
         if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
         await clearCollection("website-times")
         console.log("Data cleared")
