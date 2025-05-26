@@ -42846,6 +42846,7 @@ const unwrap = (value) => reverseTransformCache.get(value);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearCollection: () => (/* binding */ clearCollection),
 /* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
@@ -43178,7 +43179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             break;
           }
           _context.next = 3;
-          return clearCollection("website-times");
+          return (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.clearCollection)("website-times");
         case 3:
           console.log("Data cleared");
         case 4:

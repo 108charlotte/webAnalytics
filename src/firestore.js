@@ -38,7 +38,7 @@ function onToday(date) {
   return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()
 }
 
-async function clearCollection(collectionName) {
+export async function clearCollection(collectionName) {
   const colRef = collection(db, collectionName)
   const snapshot = await getDocs(colRef)
   

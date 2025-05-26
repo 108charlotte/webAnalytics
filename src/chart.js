@@ -1,5 +1,5 @@
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'chart.js'
-import { onWebsiteTimesUpdated } from './firestore';
+import { onWebsiteTimesUpdated, clearCollection } from './firestore';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true }
         })}
     })
-    
+
     // button management
 
     // clear data (reset database from firestore)
