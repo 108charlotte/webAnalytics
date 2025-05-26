@@ -42930,7 +42930,7 @@ function _updateTabToFirestore() {
           // this line is causing an error when trying to update firestore database
           nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
           _context.next = 3;
-          return getDocs(nearestIncompleteEntryWithSameName);
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDoc)(nearestIncompleteEntryWithSameName);
         case 3:
           docRef = _context.sent;
           if (!docRef.empty) {
