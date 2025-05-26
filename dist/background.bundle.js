@@ -28043,7 +28043,7 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
       var lastTabUrl = new URL(lastActiveTab.url);
       var data = {
         websiteName: lastTabUrl.hostname.replace('www.', ''),
-        endDate: Date.now()
+        setIdle: Date.now()
       };
       (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(data);
       console.log('Window focus changed, updated tab:', lastActiveTab);
@@ -28080,7 +28080,7 @@ function addOldTabToFirestore(message) {
     }
     var lastData = {
       websiteName: hostname,
-      endDate: new Date()
+      setIdle: new Date()
     };
     queueTabUpdate(lastData); // <-- Use queue instead of direct update
     console.log(message, lastActiveTab);
