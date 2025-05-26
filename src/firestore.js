@@ -103,15 +103,3 @@ export async function updateTabToFirestore(data) {
     }
   }
 }
-
-// button management
-
-// clear data (reset database from firestore)
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('clear-data')?.addEventListener('click', async () => {
-    if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
-      await clearCollection("website-times")
-      console.log("Data cleared")
-    }
-  })
-})
