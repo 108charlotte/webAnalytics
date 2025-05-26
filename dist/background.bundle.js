@@ -28011,21 +28011,25 @@ function addOldTabToFirestore(message) {
 // when the user becomes active, get the newly active tab and export to firebase with start time at that time
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
-    addOldTabToFirestore('Updated last active tab before switching to new one: ');
-    var url = new URL(tab.url);
-    var websiteName = url.hostname.replace('www.', '');
-    var data = {
-      websiteName: websiteName,
-      timestamp: Date.now()
-    };
-    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
+    if (!lastActiveTab || tab.id !== lastActiveTab.id) {
+      addOldTabToFirestore('Updated last active tab before switching to new one: ');
+      if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+        var url = new URL(tab.url);
+        var websiteName = url.hostname.replace('www.', '');
+        var data = {
+          websiteName: websiteName,
+          timestamp: new Date()
+        };
+        (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
 
-    // update the last active tab
-    addOldTabToFirestore('Updated last active tab before switching to new one: ');
-    lastActiveTab = tab;
-    lastActiveTabTimestamp = Date.now();
-    lastWindowId = tab.windowId;
-    console.log('Active tab updated:', lastActiveTab);
+        // update the last active tab
+        addOldTabToFirestore('Updated last active tab before switching to new one: ');
+        lastActiveTab = tab;
+        lastActiveTabTimestamp = Date.now();
+        lastWindowId = tab.windowId;
+        console.log('Active tab updated:', lastActiveTab);
+      }
+    }
   });
 });
 

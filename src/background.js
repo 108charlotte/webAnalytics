@@ -29,23 +29,26 @@ function addOldTabToFirestore(message) {
 // when the user becomes active, get the newly active tab and export to firebase with start time at that time
 chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.get(activeInfo.tabId, (tab) => {
-        addOldTabToFirestore('Updated last active tab before switching to new one: ')
-        
-        const url = new URL(tab.url)
-        const websiteName = url.hostname.replace('www.', '')
-        const data = {
-            websiteName,
-            timestamp: Date.now(),
+        if (!lastActiveTab || tab.id !== lastActiveTab.id) {
+            addOldTabToFirestore('Updated last active tab before switching to new one: ')
+            if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+                const url = new URL(tab.url)
+                const websiteName = url.hostname.replace('www.', '')
+                const data = {
+                    websiteName,
+                    timestamp: new Date(),
+                }
+                newTabToFirestore(data)
+
+                // update the last active tab
+                addOldTabToFirestore('Updated last active tab before switching to new one: ')
+
+                lastActiveTab = tab
+                lastActiveTabTimestamp = Date.now()
+                lastWindowId = tab.windowId
+                console.log('Active tab updated:', lastActiveTab)
+            }
         }
-        newTabToFirestore(data)
-
-        // update the last active tab
-        addOldTabToFirestore('Updated last active tab before switching to new one: ')
-
-        lastActiveTab = tab
-        lastActiveTabTimestamp = Date.now()
-        lastWindowId = tab.windowId
-        console.log('Active tab updated:', lastActiveTab)
     })
 })
 
