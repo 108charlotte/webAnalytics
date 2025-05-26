@@ -62,7 +62,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
             const lastTabUrl = new URL(lastActiveTab.url)
             const data = {
                 websiteName: lastTabUrl.hostname.replace('www.', ''),
-                setIdle: Date.now(),
+                setIdle: new Date(),
             }
             updateTabToFirestore(data)
             console.log('Window focus changed, updated tab:', lastActiveTab)
@@ -78,7 +78,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
                     updateTabToFirestore('User switched to a new window, updating last active tab: ')
                     addOldTabToFirestore('User switched to a new window, updating last active tab: ')
                     lastActiveTab = activeTab
-                    lastActiveTabTimestamp = Date.now()
+                    lastActiveTabTimestamp = new Date()
                 }
             }
         })
@@ -98,7 +98,7 @@ function addOldTabToFirestore(message) {
             websiteName: hostname,
             setIdle: new Date(),
         };
-        queueTabUpdate(lastData); // <-- Use queue instead of direct update
+        queueTabUpdate(lastData)
         console.log(message, lastActiveTab);
     }
 }

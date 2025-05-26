@@ -28043,7 +28043,7 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
       var lastTabUrl = new URL(lastActiveTab.url);
       var data = {
         websiteName: lastTabUrl.hostname.replace('www.', ''),
-        setIdle: Date.now()
+        setIdle: new Date()
       };
       (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(data);
       console.log('Window focus changed, updated tab:', lastActiveTab);
@@ -28063,7 +28063,7 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
           (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)('User switched to a new window, updating last active tab: ');
           addOldTabToFirestore('User switched to a new window, updating last active tab: ');
           lastActiveTab = activeTab;
-          lastActiveTabTimestamp = Date.now();
+          lastActiveTabTimestamp = new Date();
         }
       }
     });
@@ -28082,7 +28082,7 @@ function addOldTabToFirestore(message) {
       websiteName: hostname,
       setIdle: new Date()
     };
-    queueTabUpdate(lastData); // <-- Use queue instead of direct update
+    queueTabUpdate(lastData);
     console.log(message, lastActiveTab);
   }
 }
