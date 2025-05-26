@@ -21,7 +21,7 @@ function addOldTabToFirestore(message) {
             return
         }
         const lastData = {
-            websiteName: lastActiveTab.url.hostname.replace('www.', ''),
+            websiteName: hostname,
             endDate: Date.now(),
         }
         updateTabToFirestore(lastData)

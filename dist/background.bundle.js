@@ -27941,7 +27941,7 @@ function addOldTabToFirestore(message) {
       return;
     }
     var lastData = {
-      websiteName: lastActiveTab.url.hostname.replace('www.', ''),
+      websiteName: hostname,
       endDate: Date.now()
     };
     (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(lastData);
