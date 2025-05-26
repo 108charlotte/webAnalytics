@@ -27903,7 +27903,7 @@ function _updateTabToFirestore() {
           console.log("Found an entry to update with website name:", docToUpdate.data().websiteName);
           _context2.next = 14;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
-            setIdle: new Date(data.endDate)
+            setIdle: data.setIdle
           });
         case 14:
           console.log("Updated entry with website name:", docToUpdate.data().websiteName);

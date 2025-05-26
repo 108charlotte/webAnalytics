@@ -93,7 +93,7 @@ export async function updateTabToFirestore(data) {
       const docRef = doc(db, "website-times", docToUpdate.id)
       console.log("Found an entry to update with website name:", docToUpdate.data().websiteName)
       await updateDoc(docRef, {
-        setIdle: new Date(data.endDate)
+        setIdle: data.setIdle
       })
       console.log("Updated entry with website name:", docToUpdate.data().websiteName)
     }
