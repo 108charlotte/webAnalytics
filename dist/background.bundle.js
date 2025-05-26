@@ -27818,7 +27818,7 @@ function updateTabToFirestore(_x) {
 }
 function _updateTabToFirestore() {
   _updateTabToFirestore = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(data) {
-    var nearestIncompleteEntryWithSameName, querySnapshot, _doc;
+    var nearestIncompleteEntryWithSameName, querySnapshot, docToUpdate, docRef;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -27828,17 +27828,22 @@ function _updateTabToFirestore() {
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
         case 3:
           querySnapshot = _context.sent;
-          querySnapshot.forEach(firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc);
-          if (!querySnapshot.empty) {
-            _doc = querySnapshot.docs[0].data();
-            console.log("Found an entry to update with website name:", _doc.websiteName);
-            (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
-              setIdle: new Date(_doc.endDate)
-            });
-            console.log("Updated entry with website name:", _doc.websiteName);
+          if (querySnapshot.empty) {
+            _context.next = 11;
+            break;
           }
+          docToUpdate = querySnapshot.docs[0].data();
+          docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docToUpdate.id);
+          console.log("Found an entry to update with website name:", docToUpdate.websiteName);
+          _context.next = 10;
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
+            setIdle: new Date(data.endDate)
+          });
+        case 10:
+          console.log("Updated entry with website name:", docToUpdate.websiteName);
+        case 11:
           console.log("Could not find an entry to update");
-        case 7:
+        case 12:
         case "end":
           return _context.stop();
       }

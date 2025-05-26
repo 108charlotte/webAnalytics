@@ -67,14 +67,14 @@ export async function updateTabToFirestore(data) {
   // this line is causing an error when trying to update firestore database
   const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
   const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
-  querySnapshot.forEach((doc))
   if (!querySnapshot.empty) {
-    const doc = querySnapshot.docs[0].data()
-    console.log("Found an entry to update with website name:", doc.websiteName)
-    updateDoc(docRef, {
-      setIdle: new Date(doc.endDate)
+    const docToUpdate = querySnapshot.docs[0].data()
+    const docRef = doc(db, "website-times", docToUpdate.id)
+    console.log("Found an entry to update with website name:", docToUpdate.websiteName)
+    await updateDoc(docRef, {
+      setIdle: new Date(data.endDate)
     })
-    console.log("Updated entry with website name:", doc.websiteName)
+    console.log("Updated entry with website name:", docToUpdate.websiteName)
   }
   console.log("Could not find an entry to update")
 }
