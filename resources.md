@@ -23,3 +23,7 @@ Simple explanation of chrome tab events (doesn't go in depth, just covers severa
 How to calculate minutes between two dates: https://www.geeksforgeeks.org/how-to-calculate-minutes-between-two-dates-in-javascript/
 
 stack overflow article which showed me how to compare two dates to determine if they fall on the same day: https://stackoverflow.com/questions/43855166/how-to-tell-if-two-dates-are-in-the-same-day-or-in-the-same-hour
+
+firebase documentation on getting documents (used to suppliment netninja tutorial): https://firebase.google.com/docs/firestore/query-data/get-data#get_a_document
+
+this stack overflow article on how to only get the first item in a query: https://stackoverflow.com/questions/79143089/how-can-i-get-the-first-document-from-a-firebase-querysnapshot

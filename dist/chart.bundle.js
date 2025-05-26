@@ -42923,24 +42923,27 @@ function updateTabToFirestore(_x) {
 }
 function _updateTabToFirestore() {
   _updateTabToFirestore = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(data) {
-    var nearestIncompleteEntryWithSameName, docRef;
+    var nearestIncompleteEntryWithSameName, querySnapshot, _doc;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           // this line is causing an error when trying to update firestore database
           nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
           _context.next = 3;
-          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDoc)(nearestIncompleteEntryWithSameName);
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
         case 3:
-          docRef = _context.sent;
-          if (!docRef.empty) {
+          querySnapshot = _context.sent;
+          querySnapshot.forEach(firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc);
+          if (!querySnapshot.empty) {
+            _doc = querySnapshot.docs[0].data();
+            console.log("Found an entry to update with website name:", _doc.websiteName);
             (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
-              setIdle: new Date(data.endDate)
+              setIdle: new Date(_doc.endDate)
             });
-            console.log("Updated entry with website name:", data.websiteName);
+            console.log("Updated entry with website name:", _doc.websiteName);
           }
           console.log("Could not find an entry to update");
-        case 6:
+        case 7:
         case "end":
           return _context.stop();
       }
