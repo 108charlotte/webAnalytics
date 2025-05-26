@@ -61,8 +61,9 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
     if (windowId === chrome.windows.WINDOW_ID_NONE) {
         // User has switched to a different window or minimized the current one
         if (lastActiveTab) {
+            const lastTabUrl = new URL(lastActiveTab.url)
             const data = {
-                websiteName: lastActiveTab.url.hostname.replace('www.', ''),
+                websiteName: lastTabUrl.hostname.replace('www.', ''),
                 endDate: Date.now(),
             }
             updateTabToFirestore(data)

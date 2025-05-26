@@ -27979,8 +27979,9 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     // User has switched to a different window or minimized the current one
     if (lastActiveTab) {
+      var lastTabUrl = new URL(lastActiveTab.url);
       var data = {
-        websiteName: lastActiveTab.url.hostname.replace('www.', ''),
+        websiteName: lastTabUrl.hostname.replace('www.', ''),
         endDate: Date.now()
       };
       (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(data);
