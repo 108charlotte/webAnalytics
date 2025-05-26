@@ -27,3 +27,5 @@ stack overflow article which showed me how to compare two dates to determine if 
 firebase documentation on getting documents (used to suppliment netninja tutorial): https://firebase.google.com/docs/firestore/query-data/get-data#get_a_document
 
 this stack overflow article on how to only get the first item in a query: https://stackoverflow.com/questions/79143089/how-can-i-get-the-first-document-from-a-firebase-querysnapshot
+
+how to check for a button click in javascript: https://stackoverflow.com/questions/2788191/how-to-check-whether-a-button-is-clicked-by-using-javascript

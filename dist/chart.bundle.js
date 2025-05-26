@@ -42853,7 +42853,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/esm/index.esm.js");
 /* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/firestore */ "./node_modules/firebase/firestore/dist/esm/index.esm.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-var _document$getElementB;
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
@@ -43034,24 +43033,27 @@ function _updateTabToFirestore() {
   }));
   return _updateTabToFirestore.apply(this, arguments);
 }
-(_document$getElementB = document.getElementById('clear-data')) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-  return _regeneratorRuntime().wrap(function _callee$(_context) {
-    while (1) switch (_context.prev = _context.next) {
-      case 0:
-        if (!confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
-          _context.next = 4;
-          break;
-        }
-        _context.next = 3;
-        return clearCollection("website-times");
-      case 3:
-        console.log("Data cleared");
-      case 4:
-      case "end":
-        return _context.stop();
-    }
-  }, _callee);
-})));
+document.addEventListener('DOMContentLoaded', function () {
+  var _document$getElementB;
+  (_document$getElementB = document.getElementById('clear-data')) === null || _document$getElementB === void 0 || _document$getElementB.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          if (!confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+            _context.next = 4;
+            break;
+          }
+          _context.next = 3;
+          return clearCollection("website-times");
+        case 3:
+          console.log("Data cleared");
+        case 4:
+        case "end":
+          return _context.stop();
+      }
+    }, _callee);
+  })));
+});
 
 /***/ })
 
