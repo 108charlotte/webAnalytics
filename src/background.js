@@ -12,7 +12,14 @@ let lastWindowId = null
     // at addOldTabToFirestore (chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27933:47)
     // at chrome-extension://jiohkpcpmhajmafdfcjnpjohigdaefjl/dist/background.bundle.js:27990:11Understand this error
 function addOldTabToFirestore(message) {
-    if (lastActiveTab) {
+    if (lastActiveTab && lastActiveTab.url) {
+        let hostname; 
+        try {
+            hostname = new URL(lastActiveTab.url).hostname.replace('www.', '')
+        } catch (e) {
+            console.warn('Error parsing URL:', lastActiveTab.url, e)
+            return
+        }
         const lastData = {
             websiteName: lastActiveTab.url.hostname.replace('www.', ''),
             endDate: Date.now(),
