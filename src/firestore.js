@@ -79,16 +79,25 @@ export function newTabToFirestore(data) {
 }
 
 export async function updateTabToFirestore(data) {
-  const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
-  const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
-  if (!querySnapshot.empty) {
-    const docToUpdate = querySnapshot.docs[0]
-    const docRef = doc(db, "website-times", docToUpdate.id)
-    console.log("Found an entry to update with website name:", docToUpdate.data().websiteName)
-    await updateDoc(docRef, {
-      setIdle: new Date(data.endDate)
-    })
-    console.log("Updated entry with website name:", docToUpdate.data().websiteName)
+  try {
+    if (!data.websiteName) {
+      console.log("User switched to a non-chrome tab or tab with no websiteName.");
+      return;
+    }
+    const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
+    const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
+    if (!querySnapshot.empty) {
+      const docToUpdate = querySnapshot.docs[0]
+      const docRef = doc(db, "website-times", docToUpdate.id)
+      console.log("Found an entry to update with website name:", docToUpdate.data().websiteName)
+      await updateDoc(docRef, {
+        setIdle: new Date(data.endDate)
+      })
+      console.log("Updated entry with website name:", docToUpdate.data().websiteName)
+    }
+  } catch (error) {
+    if (error.message && error.message.includes("Function where() called with invalid data")) {
+      console.log("User switched to a non-chrome tab or tab with no websiteName")
+    }
   }
-  console.log("Could not find an entry to update")
 }
