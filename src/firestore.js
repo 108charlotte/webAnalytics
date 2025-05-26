@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot, orderBy } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -64,6 +64,7 @@ export function newTabToFirestore(data) {
 }
 
 export async function updateTabToFirestore(data) {
+  // this line is causing an error when trying to update firestore database
   const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
   const docRef = await getDocs(nearestIncompleteEntryWithSameName)
   if (!docRef.empty) {
