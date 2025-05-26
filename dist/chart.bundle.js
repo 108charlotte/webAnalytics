@@ -42938,14 +42938,14 @@ function _updateTabToFirestore() {
             break;
           }
           docToUpdate = querySnapshot.docs[0].data();
-          docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docToUpdate.id);
-          console.log("Found an entry to update with website name:", docToUpdate.websiteName);
+          docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docToUpdate.data().id);
+          console.log("Found an entry to update with website name:", docToUpdate.data().websiteName);
           _context.next = 10;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
             setIdle: new Date(data.endDate)
           });
         case 10:
-          console.log("Updated entry with website name:", docToUpdate.websiteName);
+          console.log("Updated entry with website name:", docToUpdate.data().websiteName);
         case 11:
           console.log("Could not find an entry to update");
         case 12:
