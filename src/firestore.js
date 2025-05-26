@@ -15,7 +15,7 @@ initializeApp(firebaseConfig);
 
 console.log("Firebase initialized")
 
-const db = getFirestore();
+const db = getFirestore()
 
 console.log("Firestore initialized")
 
