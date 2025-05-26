@@ -28028,7 +28028,6 @@ setInterval(function () {
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
     if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-      addOldTabToFirestore('Updated last active tab before switching to new one: ');
       if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
         var url = new URL(tab.url);
         var websiteName = url.hostname.replace('www.', '');
@@ -28037,9 +28036,6 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
           timestamp: new Date()
         };
         (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
-
-        // update the last active tab
-        addOldTabToFirestore('Updated last active tab before switching to new one: ');
         lastActiveTab = tab;
         lastActiveTabTimestamp = Date.now();
         lastWindowId = tab.windowId;
@@ -28064,7 +28060,7 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
         websiteName: lastTabUrl.hostname.replace('www.', ''),
         setIdle: new Date()
       };
-      (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(data);
+      queueTabUpdate(data);
       console.log('Window focus changed, updated tab:', lastActiveTab);
     }
     lastActiveTab = null;

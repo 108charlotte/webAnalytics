@@ -26,7 +26,6 @@ setInterval(() => {
 chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.get(activeInfo.tabId, (tab) => {
         if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-            addOldTabToFirestore('Updated last active tab before switching to new one: ')
             if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
                 const url = new URL(tab.url)
                 const websiteName = url.hostname.replace('www.', '')
@@ -35,9 +34,6 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                     timestamp: new Date(),
                 }
                 newTabToFirestore(data)
-
-                // update the last active tab
-                addOldTabToFirestore('Updated last active tab before switching to new one: ')
 
                 lastActiveTab = tab
                 lastActiveTabTimestamp = Date.now()
@@ -64,7 +60,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
                 websiteName: lastTabUrl.hostname.replace('www.', ''),
                 setIdle: new Date(),
             }
-            updateTabToFirestore(data)
+            queueTabUpdate(data)
             console.log('Window focus changed, updated tab:', lastActiveTab)
         }
         lastActiveTab = null
