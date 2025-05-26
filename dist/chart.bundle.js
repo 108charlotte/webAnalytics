@@ -43125,6 +43125,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   var ctx = canvas.getContext('2d');
   var chartInstance = null;
+  var clearButton = document.getElementById('clear-data-button');
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
     var values = Object.values(websiteTimeDict);
     var minThreshold = 1;
@@ -43132,7 +43133,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return v < minThreshold;
     });
     var messageDiv = document.getElementById('chart-message');
-    var clearButton = document.getElementById('clear-data-button');
     if (allTooSmall) {
       if (messageDiv) {
         messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data";

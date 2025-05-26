@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const ctx = canvas.getContext('2d')
     let chartInstance = null
+    const clearButton = document.getElementById('clear-data-button')
 
     onWebsiteTimesUpdated((websiteTimeDict) => {
         const values = Object.values(websiteTimeDict)
@@ -18,8 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
         const messageDiv = document.getElementById('chart-message')
-
-        const clearButton = document.getElementById('clear-data-button')
 
         if (allTooSmall) {
             if (messageDiv) {
