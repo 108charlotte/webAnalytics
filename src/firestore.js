@@ -68,13 +68,13 @@ export async function updateTabToFirestore(data) {
   const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
   const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
   if (!querySnapshot.empty) {
-    const docToUpdate = querySnapshot.docs[0].data()
+    const docToUpdate = querySnapshot.docs[0]
     const docRef = doc(db, "website-times", docToUpdate.id)
-    console.log("Found an entry to update with website name:", docToUpdate.websiteName)
+    console.log("Found an entry to update with website name:", docToUpdate.data().websiteName)
     await updateDoc(docRef, {
       setIdle: new Date(data.endDate)
     })
-    console.log("Updated entry with website name:", docToUpdate.websiteName)
+    console.log("Updated entry with website name:", docToUpdate.data().websiteName)
   }
   console.log("Could not find an entry to update")
 }
