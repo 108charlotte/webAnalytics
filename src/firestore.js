@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot, orderBy, limit, getDocs } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot, orderBy, limit, getDocs, deleteDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -23,6 +23,10 @@ const colRef = collection(db, "website-times")
 
 console.log("Collection reference created")
 
+clearCollection("website-times").then(() => {
+  console.log("❗️ Collection cleared")
+})
+
 let websites = []; 
 const websiteTimeDict = {}
 
@@ -30,6 +34,17 @@ const websiteTimeDict = {}
 function onToday(date) {
   const today = new Date()
   return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()
+}
+
+async function clearCollection(collectionName) {
+  const colRef = collection(db, collectionName)
+  const snapshot = await getDocs(colRef)
+  
+  for (const docSnap of snapshot.docs) {
+    await deleteDoc(doc(db, collectionName, docSnap.id))
+  }
+
+  console.log(`Cleared collection: ${collectionName}`)
 }
 
 export function onWebsiteTimesUpdated(callback) {
@@ -64,7 +79,6 @@ export function newTabToFirestore(data) {
 }
 
 export async function updateTabToFirestore(data) {
-  // this line is causing an error when trying to update firestore database
   const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
   const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
   if (!querySnapshot.empty) {
