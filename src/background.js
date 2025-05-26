@@ -19,7 +19,7 @@ function addOldTabToFirestore(message) {
         }
         const lastData = {
             websiteName: hostname,
-            endDate: Date.now(),
+            endDate: new Date(),
         }
         updateTabToFirestore(lastData)
         console.log(message, lastActiveTab)

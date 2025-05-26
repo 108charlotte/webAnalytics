@@ -28001,7 +28001,7 @@ function addOldTabToFirestore(message) {
     }
     var lastData = {
       websiteName: hostname,
-      endDate: Date.now()
+      endDate: new Date()
     };
     (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(lastData);
     console.log(message, lastActiveTab);
