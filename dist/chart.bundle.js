@@ -43121,6 +43121,22 @@ document.addEventListener('DOMContentLoaded', function () {
   var ctx = canvas.getContext('2d');
   var chartInstance = null;
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
+    var values = Object.values(websiteTimeDict);
+    var minThreshold = 1;
+    var allTooSmall = values.length === 0 || values.every(function (v) {
+      return v < minThreshold;
+    });
+    var messageDiv = document.getElementById('chart-message');
+    if (allTooSmall) {
+      if (messageDiv) {
+        messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data";
+        messageDiv.style.display = 'block';
+      }
+    } else {
+      if (messageDiv) {
+        messageDiv.style.display = 'none';
+      }
+    }
     var data = {
       labels: Object.keys(websiteTimeDict),
       datasets: [{

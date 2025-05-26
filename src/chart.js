@@ -13,6 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let chartInstance = null
 
     onWebsiteTimesUpdated((websiteTimeDict) => {
+        const values = Object.values(websiteTimeDict)
+        const minThreshold = 1
+
+        const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
+        const messageDiv = document.getElementById('chart-message')
+        if (allTooSmall) {
+            if (messageDiv) {
+                messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data"
+                messageDiv.style.display = 'block'
+            }
+        } else {
+            if (messageDiv) {
+                messageDiv.style.display = 'none'
+            }
+        }
         const data = {
             labels: Object.keys(websiteTimeDict),
             datasets: [{
