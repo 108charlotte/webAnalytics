@@ -28104,6 +28104,18 @@ setInterval(function () {
       });
     }
   });
+  function addOldTabToFirestore(reason) {
+    if (lastActiveTab && lastActiveTabTimestamp) {
+      var data = {
+        websiteName: new URL(lastActiveTab.url).hostname.replace('www.', ''),
+        setIdle: new Date(),
+        tabId: lastActiveTab.id,
+        userId: userId
+      };
+      queueTabUpdate(data);
+      console.log(reason, data);
+    }
+  }
 });
 })();
 

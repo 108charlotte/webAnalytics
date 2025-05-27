@@ -77,4 +77,17 @@ retrieveUserId().then((userId) => {
             })
         }
     })
+
+    function addOldTabToFirestore(reason) {
+        if (lastActiveTab && lastActiveTabTimestamp) {
+            const data = {
+                websiteName: new URL(lastActiveTab.url).hostname.replace('www.', ''),
+                setIdle: new Date(),
+                tabId: lastActiveTab.id,
+                userId: userId 
+            };
+            queueTabUpdate(data);
+            console.log(reason, data);
+        }
+    }
 })
