@@ -43189,6 +43189,7 @@ function updateChart(dict) {
   }
   var ctx = canvas.getContext('2d');
   var chartInstance = null;
+  var clearButton = document.getElementById('clear-data-button');
   var values = Object.values(dict);
   var minThreshold = 1;
   var allTooSmall = values.length === 0 || values.every(function (v) {

@@ -92,6 +92,7 @@ function updateChart(dict) {
 
     const ctx = canvas.getContext('2d')
     let chartInstance = null
+    const clearButton = document.getElementById('clear-data-button')
 
     const values = Object.values(dict)
 
