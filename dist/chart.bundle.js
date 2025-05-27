@@ -43167,17 +43167,17 @@ document.addEventListener('DOMContentLoaded', function () {
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
     var values = Object.values(websiteTimeDict);
     todayButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
+      values = Object.values(websiteTimeDict).filter(function (website) {
         return onToday(website.setActive.toDate());
       });
     });
     thisWeekButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
+      values = Object.values(websiteTimeDict).filter(function (website) {
         return onThisWeek(website.setActive.toDate());
       });
     });
     thisMonthButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
+      values = Object.values(websiteTimeDict).filter(function (website) {
         return onThisYear(website.setActive.toDate());
       });
     });

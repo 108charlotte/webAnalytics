@@ -82,15 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let values = Object.values(websiteTimeDict)
 
         todayButton.addEventListener('click', () => {
-            values = websites.filter(website => onToday(website.setActive.toDate()))
+            values = Object.values(websiteTimeDict).filter(website => onToday(website.setActive.toDate()))
         })
 
         thisWeekButton.addEventListener('click', () => {
-            values = websites.filter(website => onThisWeek(website.setActive.toDate()))
+            values = Object.values(websiteTimeDict).filter(website => onThisWeek(website.setActive.toDate()))
         })
-        
+
         thisMonthButton.addEventListener('click', () => {
-            values = websites.filter(website => onThisYear(website.setActive.toDate()))
+            values = Object.values(websiteTimeDict).filter(website => onThisYear(website.setActive.toDate()))
         })
 
         allTimeButton.addEventListener('click', () => {
