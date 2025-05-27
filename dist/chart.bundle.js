@@ -43057,21 +43057,24 @@ function onWebsiteTimesUpdated(userId, callback) {
 }
 function endAllSessions(message) {
   var openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
-  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
+  return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
+    var updates = [];
     querySnapshot.forEach(function (docSnap) {
       var docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docSnap.id);
-      (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
+      updates.push((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
         setIdle: new Date()
       }).then(function () {
-        console.log("Updated entry with website name:", docSnap.data().websiteName);
+        return console.log("Updated entry with website name:", docSnap.data().websiteName);
       })["catch"](function (error) {
-        console.error("Error updating document:", error);
-      });
+        return console.error("Error updating document:", error);
+      }));
     });
+    return Promise.all(updates);
   })["catch"](function (error) {
     console.error("Error getting documents:", error);
+  }).then(function () {
+    console.log(message || "All sessions ended.");
   });
-  console.log(message || "All sessions ended.");
 }
 function updateTabToFirestore(_x4) {
   return _updateTabToFirestore.apply(this, arguments);

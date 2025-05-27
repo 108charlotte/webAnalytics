@@ -103,21 +103,22 @@ export function onWebsiteTimesUpdated(userId, callback) {
 
 export function endAllSessions(message) {
   const openSessionsQuery = query(colRef, where("setIdle", "==", null))
-  getDocs(openSessionsQuery).then((querySnapshot) => {
+  return getDocs(openSessionsQuery).then((querySnapshot) => {
+    const updates = []
     querySnapshot.forEach(function (docSnap) {
       const docRef = doc(db, "website-times", docSnap.id)
-      updateDoc(docRef, {
-        setIdle: new Date()
-      }).then(function () {
-        console.log("Updated entry with website name:", docSnap.data().websiteName)
-      }).catch(function (error) {
-        console.error("Error updating document:", error)
-      })
+      updates.push(
+        updateDoc(docRef, { setIdle: new Date() })
+          .then(() => console.log("Updated entry with website name:", docSnap.data().websiteName))
+          .catch((error) => console.error("Error updating document:", error))
+      )
     })
+    return Promise.all(updates)
   }).catch((error) => {
     console.error("Error getting documents:", error)
+  }).then(() => {
+    console.log(message || "All sessions ended.")
   })
-  console.log(message || "All sessions ended.")
 }
 
 export async function updateTabToFirestore(data) {

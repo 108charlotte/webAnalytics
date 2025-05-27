@@ -21,10 +21,10 @@ setInterval(() => {
 }, 5000)
 
 retrieveUserId().then((userId) => {
-    chrome.tabs.onActivated.addListener((activeInfo) => {
-        chrome.tabs.get(activeInfo.tabId, (tab) => {
+    chrome.tabs.onActivated.addListener(async (activeInfo) => {
+        chrome.tabs.get(activeInfo.tabId, async (tab) => {
             if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-                endAllSessions('User switched to a new tab, updating last active tab: ')
+                await endAllSessions('User switched to a new tab, updating last active tab: ')
                 if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
                     const url = new URL(tab.url)
                     const websiteName = url.hostname.replace('www.', '')
