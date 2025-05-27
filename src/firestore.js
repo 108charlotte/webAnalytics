@@ -104,13 +104,13 @@ export function onWebsiteTimesUpdated(userId, callback) {
 export function endAllSessions(message) {
   const openSessionsQuery = query(colRef, where("setIdle", "==", null))
   getDocs(openSessionsQuery).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const docRef = doc(db, "website-times", doc.id)
+    querySnapshot.forEach(function (docSnap) {
+      const docRef = doc(db, "website-times", docSnap.id)
       updateDoc(docRef, {
         setIdle: new Date()
-      }).then(() => {
-        console.log("Updated entry with website name:", doc.data().websiteName)
-      }).catch((error) => {
+      }).then(function () {
+        console.log("Updated entry with website name:", docSnap.data().websiteName)
+      }).catch(function (error) {
         console.error("Error updating document:", error)
       })
     })
