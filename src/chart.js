@@ -1,5 +1,5 @@
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'chart.js'
-import { onWebsiteTimesUpdated, clearCollection, retrieveUserId } from './firestore';
+import { onWebsiteTimesUpdated, clearCollection, retrieveUserId, devDelete } from './firestore';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
@@ -13,6 +13,10 @@ function onThisYear(date) {
     const today = new Date()
     return date.getFullYear() === today.getFullYear()
 }
+
+devDelete("website-times").then(() => {
+    console.log("Dev delete completed")
+})
 
 // see resources for where I got this from (stack overflow)
 function onThisWeek(date, boundaryDay=0)

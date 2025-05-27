@@ -27,6 +27,15 @@ export async function clearCollection(collectionName, userId) {
   console.log(`Cleared collection: ${collectionName} for user: ${userId}`);
 }
 
+export async function devDelete(collectionName) {
+  const colRef = collection(db, collectionName)
+  const snapshot = await getDocs(colRef)
+  for (const docSnap of snapshot.docs) {
+    await deleteDoc(doc(db, collectionName, docSnap.id))
+  }
+  console.log(`Cleared collection: ${collectionName}`);
+}
+
 // --- Promise-based retrieveUserId ---
 function getRandomToken() {
   var randomPool = new Uint8Array(32)

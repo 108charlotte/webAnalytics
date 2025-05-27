@@ -42847,6 +42847,7 @@ const unwrap = (value) => reverseTransformCache.get(value);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
+/* harmony export */   devDelete: () => (/* binding */ devDelete),
 /* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
 /* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
@@ -42884,8 +42885,6 @@ var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, 
 function clearCollection(_x, _x2) {
   return _clearCollection.apply(this, arguments);
 }
-
-// --- Promise-based retrieveUserId ---
 function _clearCollection() {
   _clearCollection = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(collectionName, userId) {
     var colRef, snapshot, _iterator, _step, docSnap;
@@ -42940,6 +42939,57 @@ function _clearCollection() {
     }, _callee, null, [[5, 20, 23, 26]]);
   }));
   return _clearCollection.apply(this, arguments);
+}
+function devDelete(_x3) {
+  return _devDelete.apply(this, arguments);
+}
+
+// --- Promise-based retrieveUserId ---
+function _devDelete() {
+  _devDelete = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(collectionName) {
+    var colRef, snapshot, _iterator2, _step2, docSnap;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, collectionName);
+          _context2.next = 3;
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(colRef);
+        case 3:
+          snapshot = _context2.sent;
+          _iterator2 = _createForOfIteratorHelper(snapshot.docs);
+          _context2.prev = 5;
+          _iterator2.s();
+        case 7:
+          if ((_step2 = _iterator2.n()).done) {
+            _context2.next = 13;
+            break;
+          }
+          docSnap = _step2.value;
+          _context2.next = 11;
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.deleteDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, collectionName, docSnap.id));
+        case 11:
+          _context2.next = 7;
+          break;
+        case 13:
+          _context2.next = 18;
+          break;
+        case 15:
+          _context2.prev = 15;
+          _context2.t0 = _context2["catch"](5);
+          _iterator2.e(_context2.t0);
+        case 18:
+          _context2.prev = 18;
+          _iterator2.f();
+          return _context2.finish(18);
+        case 21:
+          console.log("Cleared collection: ".concat(collectionName));
+        case 22:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[5, 15, 18, 21]]);
+  }));
+  return _devDelete.apply(this, arguments);
 }
 function getRandomToken() {
   var randomPool = new Uint8Array(32);
@@ -43021,57 +43071,57 @@ function endAllSessions() {
     console.error("Error getting documents:", error);
   });
 }
-function updateTabToFirestore(_x3) {
+function updateTabToFirestore(_x4) {
   return _updateTabToFirestore.apply(this, arguments);
 }
 function _updateTabToFirestore() {
-  _updateTabToFirestore = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
+  _updateTabToFirestore = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(data) {
     var nearestIncompleteEntryWithSameName, querySnapshot, docToUpdate, docRef;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
         case 0:
-          _context2.prev = 0;
+          _context3.prev = 0;
           console.log("Trying to update:", data.websiteName, data.tabId, data.setIdle);
           if (data.websiteName) {
-            _context2.next = 5;
+            _context3.next = 5;
             break;
           }
           console.log("User switched to a non-chrome tab or tab with no websiteName.");
-          return _context2.abrupt("return");
+          return _context3.abrupt("return");
         case 5:
           nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("tabId", "==", data.tabId), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
-          _context2.next = 8;
+          _context3.next = 8;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
         case 8:
-          querySnapshot = _context2.sent;
+          querySnapshot = _context3.sent;
           console.log("Query found", querySnapshot.size, "docs");
           if (querySnapshot.empty) {
-            _context2.next = 17;
+            _context3.next = 17;
             break;
           }
           docToUpdate = querySnapshot.docs[0];
           docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docToUpdate.id);
           console.log("Found an entry to update with website name:", docToUpdate.data().websiteName);
-          _context2.next = 16;
+          _context3.next = 16;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
             setIdle: data.setIdle
           });
         case 16:
           console.log("Updated entry with website name:", docToUpdate.data().websiteName);
         case 17:
-          _context2.next = 22;
+          _context3.next = 22;
           break;
         case 19:
-          _context2.prev = 19;
-          _context2.t0 = _context2["catch"](0);
-          if (_context2.t0.message && _context2.t0.message.includes("Function where() called with invalid data")) {
+          _context3.prev = 19;
+          _context3.t0 = _context3["catch"](0);
+          if (_context3.t0.message && _context3.t0.message.includes("Function where() called with invalid data")) {
             console.log("User switched to a non-chrome tab or tab with no websiteName");
           }
         case 22:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
-    }, _callee2, null, [[0, 19]]);
+    }, _callee3, null, [[0, 19]]);
   }));
   return _updateTabToFirestore.apply(this, arguments);
 }
@@ -43172,6 +43222,9 @@ function onThisYear(date) {
   var today = new Date();
   return date.getFullYear() === today.getFullYear();
 }
+(0,_firestore__WEBPACK_IMPORTED_MODULE_0__.devDelete)("website-times").then(function () {
+  console.log("Dev delete completed");
+});
 
 // see resources for where I got this from (stack overflow)
 function onThisWeek(date) {
