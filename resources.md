@@ -29,3 +29,11 @@ firebase documentation on getting documents (used to suppliment netninja tutoria
 this stack overflow article on how to only get the first item in a query: https://stackoverflow.com/questions/79143089/how-can-i-get-the-first-document-from-a-firebase-querysnapshot
 
 how to check for a button click in javascript: https://stackoverflow.com/questions/2788191/how-to-check-whether-a-button-is-clicked-by-using-javascript
+
+resources for styling buttons in html and css: 
+
+https://www.w3schools.com/html/html_css.asp#:~:text=CSS%20can%20be%20added%20to,element%20in%20the%20section
+
+https://www.shecodes.io/athena/43505-how-to-place-two-buttons-side-by-side-in-html-css
+
+checking if two days are on the same week: https://dev.to/mellen/dates-in-the-same-week-3ogg

@@ -42891,12 +42891,6 @@ clearCollection("website-times").then(() => {
 
 var websites = [];
 var websiteTimeDict = {};
-
-// see resources for where I got this from (stack overflow)
-function onToday(date) {
-  var today = new Date();
-  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
-}
 function clearCollection(_x) {
   return _clearCollection.apply(this, arguments);
 }
@@ -42950,21 +42944,19 @@ function onWebsiteTimesUpdated(callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
     snapshot.docs.forEach(function (doc) {
+      var _data$setIdle;
       var data = doc.data();
       var name = data.websiteName;
       var startDate = data.setActive.toDate();
       var today = new Date();
-      if (onToday(startDate)) {
-        var _data$setIdle;
-        var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
-        if (endDate && startDate && endDate > startDate) {
-          var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
-          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
-        }
-        websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
-          id: doc.id
-        }));
+      var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
+      if (endDate && startDate && endDate > startDate) {
+        var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
+        websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
       }
+      websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
+        id: doc.id
+      }));
     });
     console.log(websites);
     console.log(websiteTimeDict);
@@ -43117,10 +43109,56 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 
 
 chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart.register(chart_js__WEBPACK_IMPORTED_MODULE_1__.DoughnutController, chart_js__WEBPACK_IMPORTED_MODULE_1__.ArcElement, chart_js__WEBPACK_IMPORTED_MODULE_1__.Tooltip, chart_js__WEBPACK_IMPORTED_MODULE_1__.Legend, chart_js__WEBPACK_IMPORTED_MODULE_1__.Title);
+
+// see resources for where I got this from (stack overflow)
+function onToday(date) {
+  var today = new Date();
+  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+}
+function onThisYear(date) {
+  var today = new Date();
+  return date.getFullYear() === today.getFullYear();
+}
+
+// see resources for where I got this from (stack overflow)
+function onThisWeek(date) {
+  var boundaryDay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var today = new Date();
+  if (today > date) {
+    var t = date;
+    date = today;
+    today = t;
+  }
+  if ((today - date) / 1000 / 3600 / 24 > 6) {
+    return false;
+  }
+  var dayToday = today.getUTCDay();
+  var dayDate = date.getUTCDay();
+  if (dayToday == boundaryDay) {
+    return true;
+  }
+  if (dayDate == boundaryDay) {
+    return false;
+  }
+  var dayTodayBoundaryDist = (dayToday - boundaryDay + 7) % 7;
+  var dayDateBoundaryDist = (dayDate - boundaryDay + 7) % 7;
+  if (dayTodayBoundaryDist <= dayDateBoundaryDist) {
+    return true;
+  }
+  return false;
+}
 document.addEventListener('DOMContentLoaded', function () {
   var canvas = document.getElementById('acquisitions');
   if (!canvas) {
     console.error("Canvas element with id 'acquisitions' not found.");
+    return;
+  }
+  var todayButton = document.getElementById('today-button');
+  var thisWeekButton = document.getElementById('this-week-button');
+  var thisMonthButton = document.getElementById('this-year-button');
+  var allTimeButton = document.getElementById('all-time-button');
+  if (!todayButton || !thisWeekButton || !thisMonthButton || !allTimeButton) {
+    console.error("One or more filter buttons not found.");
     return;
   }
   var ctx = canvas.getContext('2d');
@@ -43128,6 +43166,24 @@ document.addEventListener('DOMContentLoaded', function () {
   var clearButton = document.getElementById('clear-data-button');
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
     var values = Object.values(websiteTimeDict);
+    todayButton.addEventListener('click', function () {
+      values = websites.filter(function (website) {
+        return onToday(website.setActive.toDate());
+      });
+    });
+    thisWeekButton.addEventListener('click', function () {
+      values = websites.filter(function (website) {
+        return onThisWeek(website.setActive.toDate());
+      });
+    });
+    thisMonthButton.addEventListener('click', function () {
+      values = websites.filter(function (website) {
+        return onThisYear(website.setActive.toDate());
+      });
+    });
+    allTimeButton.addEventListener('click', function () {
+      values = Object.values(websiteTimeDict);
+    });
     var minThreshold = 1;
     var allTooSmall = values.length === 0 || values.every(function (v) {
       return v < minThreshold;

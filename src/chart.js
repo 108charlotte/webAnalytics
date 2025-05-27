@@ -3,18 +3,100 @@ import { onWebsiteTimesUpdated, clearCollection } from './firestore';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
+// see resources for where I got this from (stack overflow)
+function onToday(date) {
+  const today = new Date()
+  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate()
+}
+
+function onThisYear(date) {
+    const today = new Date()
+    return date.getFullYear() === today.getFullYear()
+}
+
+// see resources for where I got this from (stack overflow)
+function onThisWeek(date, boundaryDay=0)
+{
+    let today = new Date()
+    if(today > date)
+    {
+        let t = date;
+        date = today;
+        today = t;
+    }
+
+    if(((((today - date)/1000)/3600)/24)>6)
+    {
+        return false;
+    }
+
+    let dayToday = today.getUTCDay();
+    let dayDate = date.getUTCDay();
+
+    if(dayToday == boundaryDay)
+    {
+        return true;
+    }
+
+    if(dayDate == boundaryDay)
+    {
+        return false;
+    }
+
+    let dayTodayBoundaryDist = ((dayToday-boundaryDay)+7)%7;
+    let dayDateBoundaryDist = ((dayDate-boundaryDay)+7)%7;
+
+    if(dayTodayBoundaryDist <= dayDateBoundaryDist)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('acquisitions')
+    
     if (!canvas) {
-        console.error("Canvas element with id 'acquisitions' not found.");
-        return;
+        console.error("Canvas element with id 'acquisitions' not found.")
+        return
     }
+
+
+    const todayButton = document.getElementById('today-button')
+    const thisWeekButton = document.getElementById('this-week-button')
+    const thisMonthButton = document.getElementById('this-year-button')
+    const allTimeButton = document.getElementById('all-time-button')
+
+    if (!todayButton || !thisWeekButton || !thisMonthButton || !allTimeButton) {
+        console.error("One or more filter buttons not found.")
+        return
+    }
+        
+
     const ctx = canvas.getContext('2d')
     let chartInstance = null
     const clearButton = document.getElementById('clear-data-button')
 
     onWebsiteTimesUpdated((websiteTimeDict) => {
-        const values = Object.values(websiteTimeDict)
+        let values = Object.values(websiteTimeDict)
+
+        todayButton.addEventListener('click', () => {
+            values = websites.filter(website => onToday(website.setActive.toDate()))
+        })
+
+        thisWeekButton.addEventListener('click', () => {
+            values = websites.filter(website => onThisWeek(website.setActive.toDate()))
+        })
+        
+        thisMonthButton.addEventListener('click', () => {
+            values = websites.filter(website => onThisYear(website.setActive.toDate()))
+        })
+
+        allTimeButton.addEventListener('click', () => {
+            values = Object.values(websiteTimeDict)
+        })
+
         const minThreshold = 1
 
         const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
