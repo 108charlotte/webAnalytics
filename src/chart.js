@@ -83,6 +83,8 @@ function buildChartData(websites, restriction) {
 }
 
 function updateChart(dict) {
+    const values = Object.values(dict)
+
     const minThreshold = 1
 
     const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
@@ -106,7 +108,7 @@ function updateChart(dict) {
         labels: Object.keys(dict),
         datasets: [{
         label: 'Minutes',
-        data: Object.values(dict),
+        data: values,
         backgroundColor: [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
             '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
