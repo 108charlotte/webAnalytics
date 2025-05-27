@@ -27844,13 +27844,13 @@ var firebaseConfig = {
 (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.initializeApp)(firebaseConfig);
 var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();
 var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, "website-times");
-function clearCollection(_x) {
+function clearCollection(_x, _x2) {
   return _clearCollection.apply(this, arguments);
 }
 
 // --- Promise-based retrieveUserId ---
 function _clearCollection() {
-  _clearCollection = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(collectionName) {
+  _clearCollection = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(collectionName, userId) {
     var colRef, snapshot, _iterator, _step, docSnap;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
@@ -27865,33 +27865,42 @@ function _clearCollection() {
           _iterator.s();
         case 7:
           if ((_step = _iterator.n()).done) {
-            _context.next = 13;
+            _context.next = 18;
             break;
           }
           docSnap = _step.value;
           _context.next = 11;
-          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.deleteDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, collectionName, docSnap.id));
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, collectionName, docSnap.id));
         case 11:
+          _context.t0 = _context.sent.data().userId;
+          _context.t1 = userId;
+          if (!(_context.t0 == _context.t1)) {
+            _context.next = 16;
+            break;
+          }
+          _context.next = 16;
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.deleteDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, collectionName, docSnap.id));
+        case 16:
           _context.next = 7;
           break;
-        case 13:
-          _context.next = 18;
-          break;
-        case 15:
-          _context.prev = 15;
-          _context.t0 = _context["catch"](5);
-          _iterator.e(_context.t0);
         case 18:
-          _context.prev = 18;
+          _context.next = 23;
+          break;
+        case 20:
+          _context.prev = 20;
+          _context.t2 = _context["catch"](5);
+          _iterator.e(_context.t2);
+        case 23:
+          _context.prev = 23;
           _iterator.f();
-          return _context.finish(18);
-        case 21:
-          console.log("Cleared collection: ".concat(collectionName));
-        case 22:
+          return _context.finish(23);
+        case 26:
+          console.log("Cleared collection: ".concat(collectionName, " for user: ").concat(userId));
+        case 27:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[5, 15, 18, 21]]);
+    }, _callee, null, [[5, 20, 23, 26]]);
   }));
   return _clearCollection.apply(this, arguments);
 }
@@ -27975,7 +27984,7 @@ function endAllSessions() {
     console.error("Error getting documents:", error);
   });
 }
-function updateTabToFirestore(_x2) {
+function updateTabToFirestore(_x3) {
   return _updateTabToFirestore.apply(this, arguments);
 }
 function _updateTabToFirestore() {

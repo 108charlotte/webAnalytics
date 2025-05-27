@@ -16,13 +16,15 @@ initializeApp(firebaseConfig);
 const db = getFirestore()
 const colRef = collection(db, "website-times")
 
-export async function clearCollection(collectionName) {
+export async function clearCollection(collectionName, userId) {
   const colRef = collection(db, collectionName)
   const snapshot = await getDocs(colRef)
   for (const docSnap of snapshot.docs) {
-    await deleteDoc(doc(db, collectionName, docSnap.id))
+    if ((await getDoc(doc(db, collectionName, docSnap.id))).data().userId == userId) {
+      await deleteDoc(doc(db, collectionName, docSnap.id))
+    }
   }
-  console.log(`Cleared collection: ${collectionName}`)
+  console.log(`Cleared collection: ${collectionName} for user: ${userId}`);
 }
 
 // --- Promise-based retrieveUserId ---
