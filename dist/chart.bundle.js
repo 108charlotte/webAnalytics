@@ -42883,13 +42883,6 @@ var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();
 console.log("Firestore initialized");
 var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, "website-times");
 console.log("Collection reference created");
-
-/*
-clearCollection("website-times").then(() => {
-  console.log("❗️ Collection cleared")
-})
-  */
-
 var websites = [];
 var websiteTimeDict = {};
 function clearCollection(_x) {
@@ -42941,24 +42934,40 @@ function _clearCollection() {
   }));
   return _clearCollection.apply(this, arguments);
 }
+var userId = null;
+chrome.storage.sync.get('userid', function (items) {
+  if (items.userid) {
+    userId = items.userid;
+    console.log('Using existing user ID:', userId);
+  } else {
+    userId = getRandomToken();
+    chrome.storage.sync.set({
+      userid: userId
+    }, function () {
+      console.log('Generated new userId:', userId);
+    });
+  }
+});
 function onWebsiteTimesUpdated(callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
     var websites = [];
     var websiteTimeDict = {};
     snapshot.docs.forEach(function (doc) {
-      var _data$setIdle;
       var data = doc.data();
-      var name = data.websiteName;
-      var startDate = data.setActive.toDate();
-      var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
-      if (endDate && startDate && endDate > startDate) {
-        var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
-        websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
+      if (data.userId == userId) {
+        var _data$setIdle;
+        var name = data.websiteName;
+        var startDate = data.setActive.toDate();
+        var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
+        if (endDate && startDate && endDate > startDate) {
+          var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
+          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
+        }
+        websites.push(_objectSpread(_objectSpread({}, data), {}, {
+          id: doc.id
+        }));
       }
-      websites.push(_objectSpread(_objectSpread({}, data), {}, {
-        id: doc.id
-      }));
     });
     console.log(websites);
     console.log(websiteTimeDict);

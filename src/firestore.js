@@ -23,13 +23,7 @@ const colRef = collection(db, "website-times")
 
 console.log("Collection reference created")
 
-/*
-clearCollection("website-times").then(() => {
-  console.log("❗️ Collection cleared")
-})
-  */
-
-let websites = []; 
+let websites = []
 const websiteTimeDict = {}
 
 export async function clearCollection(collectionName) {
@@ -43,28 +37,44 @@ export async function clearCollection(collectionName) {
   console.log(`Cleared collection: ${collectionName}`)
 }
 
+let userId = null
+
+chrome.storage.sync.get('userid', function(items) {
+    if (items.userid) {
+        userId = items.userid
+        console.log('Using existing user ID:', userId)
+    } else {
+        userId = getRandomToken()
+        chrome.storage.sync.set({userid: userId}, function() {
+            console.log('Generated new userId:', userId)
+        })
+    }
+})
+
 export function onWebsiteTimesUpdated(callback) {
   onSnapshot(colRef, (snapshot) => {
     console.log("Snapshot received")
-    let websites = [];
-    const websiteTimeDict = {};
+    let websites = []
+    const websiteTimeDict = {}
 
     snapshot.docs.forEach((doc) => {
       const data = doc.data()
-      const name = data.websiteName
-      let startDate = data.setActive.toDate()
-      let endDate = data.setIdle?.toDate()
-      if (endDate && startDate && endDate > startDate) {
-        let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
-        websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
+      if (data.userId == userId) {
+        const name = data.websiteName
+        let startDate = data.setActive.toDate()
+        let endDate = data.setIdle?.toDate()
+        if (endDate && startDate && endDate > startDate) {
+          let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
+          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
+        }
+        websites.push({ ...data, id: doc.id })
       }
-      websites.push({ ...data, id: doc.id })
-    });
+    })
 
     console.log(websites)
     console.log(websiteTimeDict)
     callback(websiteTimeDict, websites)
-  });
+  })
 }
 
 export function newTabToFirestore(data) {
