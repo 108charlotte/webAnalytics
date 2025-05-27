@@ -43182,6 +43182,13 @@ function buildChartData(websites, restriction) {
   return dict;
 }
 function updateChart(dict) {
+  var canvas = document.getElementById('acquisitions');
+  if (!canvas) {
+    console.error("Canvas element with id 'acquisitions' not found.");
+    return;
+  }
+  var ctx = canvas.getContext('2d');
+  var chartInstance = null;
   var values = Object.values(dict);
   var minThreshold = 1;
   var allTooSmall = values.length === 0 || values.every(function (v) {
@@ -43224,11 +43231,6 @@ function updateChart(dict) {
   }
 }
 document.addEventListener('DOMContentLoaded', function () {
-  var canvas = document.getElementById('acquisitions');
-  if (!canvas) {
-    console.error("Canvas element with id 'acquisitions' not found.");
-    return;
-  }
   var todayButton = document.getElementById('today-button');
   var thisWeekButton = document.getElementById('this-week-button');
   var thisMonthButton = document.getElementById('this-year-button');
@@ -43237,8 +43239,6 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error("One or more filter buttons not found.");
     return;
   }
-  var ctx = canvas.getContext('2d');
-  var chartInstance = null;
   var clearButton = document.getElementById('clear-data-button');
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict, websites) {
     updateChart(websiteTimeDict);

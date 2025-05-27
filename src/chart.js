@@ -83,6 +83,16 @@ function buildChartData(websites, restriction) {
 }
 
 function updateChart(dict) {
+    const canvas = document.getElementById('acquisitions')
+    
+    if (!canvas) {
+        console.error("Canvas element with id 'acquisitions' not found.")
+        return
+    }
+
+    const ctx = canvas.getContext('2d')
+    let chartInstance = null
+
     const values = Object.values(dict)
 
     const minThreshold = 1
@@ -128,12 +138,6 @@ function updateChart(dict) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('acquisitions')
-    
-    if (!canvas) {
-        console.error("Canvas element with id 'acquisitions' not found.")
-        return
-    }
 
     const todayButton = document.getElementById('today-button')
     const thisWeekButton = document.getElementById('this-week-button')
@@ -145,8 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return
     }
 
-    const ctx = canvas.getContext('2d')
-    let chartInstance = null
     const clearButton = document.getElementById('clear-data-button')
 
     onWebsiteTimesUpdated((websiteTimeDict, websites) => {
