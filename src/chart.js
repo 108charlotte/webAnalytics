@@ -98,8 +98,13 @@ function updateChart(dict) {
     const values = Object.values(dict)
 
     const minThreshold = 1
+    const hourThreshold = 120
 
-    const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
+    const useHours = values.some(v => v >= hourThreshold)
+    const displayValues = useHours ? values.map(v => (v / 60).toFixed(2)) : values
+    const unitLabel = useHours ? 'Hours' : 'Minutes'
+
+    const allTooSmall = values.length === 0 || displayValues.every(v => v < minThreshold)
     const messageDiv = document.getElementById('chart-message')
 
     if (allTooSmall) {
@@ -123,8 +128,8 @@ function updateChart(dict) {
     const data = {
         labels: Object.keys(dict),
         datasets: [{
-        label: 'Minutes',
-        data: values,
+        label: unitLabel,
+        data: displayValues,
         backgroundColor: [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
             '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
@@ -179,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // clear data (reset database from firestore)
     clearButton.addEventListener('click', async () => {
-        if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+        if (confirm("Are you sure you want to clear all data (this includes data not displayed in this view)? This action cannot be undone.")) {
         await clearCollection("website-times")
         console.log("Data cleared")
         }

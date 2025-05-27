@@ -43192,7 +43192,15 @@ function updateChart(dict) {
   var clearButton = document.getElementById('clear-data-button');
   var values = Object.values(dict);
   var minThreshold = 1;
-  var allTooSmall = values.length === 0 || values.every(function (v) {
+  var hourThreshold = 120;
+  var useHours = values.some(function (v) {
+    return v >= hourThreshold;
+  });
+  var displayValues = useHours ? values.map(function (v) {
+    return (v / 60).toFixed(2);
+  }) : values;
+  var unitLabel = useHours ? 'Hours' : 'Minutes';
+  var allTooSmall = values.length === 0 || displayValues.every(function (v) {
     return v < minThreshold;
   });
   var messageDiv = document.getElementById('chart-message');
@@ -43217,8 +43225,8 @@ function updateChart(dict) {
   var data = {
     labels: Object.keys(dict),
     datasets: [{
-      label: 'Minutes',
-      data: values,
+      label: unitLabel,
+      data: displayValues,
       backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
     }]
   };
@@ -43264,7 +43272,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          if (!confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+          if (!confirm("Are you sure you want to clear all data (this includes data not displayed in this view)? This action cannot be undone.")) {
             _context.next = 4;
             break;
           }
