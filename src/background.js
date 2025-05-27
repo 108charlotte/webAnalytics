@@ -24,7 +24,7 @@ retrieveUserId().then((userId) => {
     chrome.tabs.onActivated.addListener((activeInfo) => {
         chrome.tabs.get(activeInfo.tabId, (tab) => {
             if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-                addOldTabToFirestore('User switched to a new tab, updating last active tab: ')
+                endAllSessions('User switched to a new tab, updating last active tab: ')
                 if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
                     const url = new URL(tab.url)
                     const websiteName = url.hostname.replace('www.', '')
@@ -48,22 +48,21 @@ retrieveUserId().then((userId) => {
 
     chrome.idle.onStateChanged.addListener((newState) => {
         if (newState === 'idle' || newState === 'locked') {
-            addOldTabToFirestore('User is idle, updating last active tab: ')
+            endAllSessions('User is idle, updating last active tab: ')
             lastActiveTab = null
             lastActiveTabTimestamp = null
         }
     })
 
     chrome.runtime.onSuspend.addListener(() => {
-        addOldTabToFirestore('Extension is suspending, updating last active tab: ')
+        endAllSessions('Extension is suspending, updating last active tab: ')
         lastActiveTab = null
         lastActiveTabTimestamp = null
-        endAllSessions()
     })
 
     chrome.windows.onFocusChanged.addListener((windowId) => {
         if (windowId === chrome.windows.WINDOW_ID_NONE) {
-            addOldTabToFirestore('User switched to a different window or minimized, updating last active tab: ')
+            endAllSessions('User switched to a different window or minimized, updating last active tab: ')
             lastActiveTab = null
             lastActiveTabTimestamp = null
         } else {
@@ -71,7 +70,7 @@ retrieveUserId().then((userId) => {
                 if (tabs.length > 0) {
                     const activeTab = tabs[0]
                     if (activeTab.id !== lastActiveTab?.id) {
-                        addOldTabToFirestore('User switched to a new window, updating last active tab: ')
+                        endAllSessions('User switched to a new window, updating last active tab: ')
                         lastActiveTab = activeTab
                         lastActiveTabTimestamp = new Date()
                     }

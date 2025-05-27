@@ -28018,7 +28018,7 @@ function onWebsiteTimesUpdated(userId, callback) {
     callback(websiteTimeDict, websites);
   });
 }
-function endAllSessions() {
+function endAllSessions(message) {
   var openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
@@ -28034,6 +28034,7 @@ function endAllSessions() {
   })["catch"](function (error) {
     console.error("Error getting documents:", error);
   });
+  console.log(message || "All sessions ended.");
 }
 function updateTabToFirestore(_x4) {
   return _updateTabToFirestore.apply(this, arguments);

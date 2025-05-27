@@ -27950,7 +27950,7 @@ function onWebsiteTimesUpdated(userId, callback) {
     callback(websiteTimeDict, websites);
   });
 }
-function endAllSessions() {
+function endAllSessions(message) {
   var openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
@@ -27966,6 +27966,7 @@ function endAllSessions() {
   })["catch"](function (error) {
     console.error("Error getting documents:", error);
   });
+  console.log(message || "All sessions ended.");
 }
 function updateTabToFirestore(_x4) {
   return _updateTabToFirestore.apply(this, arguments);
@@ -28146,7 +28147,7 @@ setInterval(function () {
   chrome.tabs.onActivated.addListener(function (activeInfo) {
     chrome.tabs.get(activeInfo.tabId, function (tab) {
       if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-        addOldTabToFirestore('User switched to a new tab, updating last active tab: ');
+        (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)('User switched to a new tab, updating last active tab: ');
         if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
           var url = new URL(tab.url);
           var websiteName = url.hostname.replace('www.', '');
@@ -28168,20 +28169,19 @@ setInterval(function () {
   });
   chrome.idle.onStateChanged.addListener(function (newState) {
     if (newState === 'idle' || newState === 'locked') {
-      addOldTabToFirestore('User is idle, updating last active tab: ');
+      (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)('User is idle, updating last active tab: ');
       lastActiveTab = null;
       lastActiveTabTimestamp = null;
     }
   });
   chrome.runtime.onSuspend.addListener(function () {
-    addOldTabToFirestore('Extension is suspending, updating last active tab: ');
+    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)('Extension is suspending, updating last active tab: ');
     lastActiveTab = null;
     lastActiveTabTimestamp = null;
-    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)();
   });
   chrome.windows.onFocusChanged.addListener(function (windowId) {
     if (windowId === chrome.windows.WINDOW_ID_NONE) {
-      addOldTabToFirestore('User switched to a different window or minimized, updating last active tab: ');
+      (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)('User switched to a different window or minimized, updating last active tab: ');
       lastActiveTab = null;
       lastActiveTabTimestamp = null;
     } else {
@@ -28193,7 +28193,7 @@ setInterval(function () {
           var _lastActiveTab;
           var activeTab = tabs[0];
           if (activeTab.id !== ((_lastActiveTab = lastActiveTab) === null || _lastActiveTab === void 0 ? void 0 : _lastActiveTab.id)) {
-            addOldTabToFirestore('User switched to a new window, updating last active tab: ');
+            (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)('User switched to a new window, updating last active tab: ');
             lastActiveTab = activeTab;
             lastActiveTabTimestamp = new Date();
           }

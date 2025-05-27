@@ -101,7 +101,7 @@ export function onWebsiteTimesUpdated(userId, callback) {
   })
 }
 
-export function endAllSessions() {
+export function endAllSessions(message) {
   const openSessionsQuery = query(colRef, where("setIdle", "==", null))
   getDocs(openSessionsQuery).then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
@@ -117,6 +117,7 @@ export function endAllSessions() {
   }).catch((error) => {
     console.error("Error getting documents:", error)
   })
+  console.log(message || "All sessions ended.")
 }
 
 export async function updateTabToFirestore(data) {
