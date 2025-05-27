@@ -1,1 +1,2 @@
-# JARVIS
+# Web Analytics
+This is an extension designed to allow users to track the amount of time they spend on different websites! With this extension, users are able to analyze their browsing habits and see how much time they spend on different applications, such as email, empowering users to take control of their time and productivity! Please let me know if you have any feedback or find any bugs; this is only the first release and I've only ever tested it on my computer and don't know how it will hold up to a higher load. Please leave a star if you like the project, and I have included a resources.md file if you are looking for resources to build similar projects using things like firebase or webpack! 
