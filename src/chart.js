@@ -1,5 +1,5 @@
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend, Title } from 'chart.js'
-import { onWebsiteTimesUpdated, clearCollection } from './firestore';
+import { onWebsiteTimesUpdated, clearCollection, retrieveUserId } from './firestore';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend, Title)
 
@@ -190,24 +190,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clearButton = document.getElementById('clear-data-button')
 
-    onWebsiteTimesUpdated((websiteTimeDict, websites) => {
-        updateChart(websiteTimeDict)
-
-        todayButton.addEventListener('click', () => {
-            updateChart(buildChartData(websites, 'today'))
+    let websitesCache = [];
+    let websiteTimeDictCache = {};
+    retrieveUserId().then((userId) => {
+        onWebsiteTimesUpdated(userId, (websiteTimeDict, websites) => {
+            websiteTimeDictCache = websiteTimeDict
+            websitesCache = websites
+            updateChart(websiteTimeDict)
         })
+    })
 
-        thisWeekButton.addEventListener('click', () => {
-            updateChart(buildChartData(websites, 'this-week'))
-        })
-
-        thisMonthButton.addEventListener('click', () => {
-            updateChart(buildChartData(websites, 'this-year'))
-        })
-
-        allTimeButton.addEventListener('click', () => {
-            updateChart(buildChartData(websites, 'all-time'))
-        })
+    todayButton.addEventListener('click', () => {
+        updateChart(buildChartData(websitesCache, 'today'))
+    })
+    thisWeekButton.addEventListener('click', () => {
+        updateChart(buildChartData(websitesCache, 'this-week'))
+    })
+    thisMonthButton.addEventListener('click', () => {
+        updateChart(buildChartData(websitesCache, 'this-year'))
+    })
+    allTimeButton.addEventListener('click', () => {
+        updateChart(buildChartData(websitesCache, 'all-time'))
     })
 
     // clear data (reset database from firestore)

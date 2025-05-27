@@ -27743,8 +27743,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
 /* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
-/* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
+/* harmony export */   retrieveUserId: () => (/* binding */ retrieveUserId),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
 /* harmony export */ });
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/esm/index.esm.js");
@@ -27773,16 +27773,13 @@ var firebaseConfig = {
   measurementId: "G-2883329C3P"
 };
 (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.initializeApp)(firebaseConfig);
-console.log("Firebase initialized");
 var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();
-console.log("Firestore initialized");
 var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, "website-times");
-console.log("Collection reference created");
-var websites = [];
-var websiteTimeDict = {};
 function clearCollection(_x) {
   return _clearCollection.apply(this, arguments);
 }
+
+// --- Promise-based retrieveUserId ---
 function _clearCollection() {
   _clearCollection = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(collectionName) {
     var colRef, snapshot, _iterator, _step, docSnap;
@@ -27829,21 +27826,35 @@ function _clearCollection() {
   }));
   return _clearCollection.apply(this, arguments);
 }
-var userId = null;
-chrome.storage.sync.get('userid', function (items) {
-  if (items.userid) {
-    userId = items.userid;
-    console.log('Using existing user ID:', userId);
-  } else {
-    userId = getRandomToken();
-    chrome.storage.sync.set({
-      userid: userId
-    }, function () {
-      console.log('Generated new userId:', userId);
-    });
+function getRandomToken() {
+  var randomPool = new Uint8Array(32);
+  crypto.getRandomValues(randomPool);
+  var hex = '';
+  for (var i = 0; i < randomPool.length; ++i) {
+    hex += randomPool[i].toString(16);
   }
-});
-function onWebsiteTimesUpdated(callback) {
+  return hex;
+}
+function retrieveUserId() {
+  return new Promise(function (resolve) {
+    chrome.storage.sync.get('userid', function (items) {
+      var userId;
+      if (items.userid) {
+        userId = items.userid;
+        console.log('Using existing user ID:', userId);
+      } else {
+        userId = getRandomToken();
+        chrome.storage.sync.set({
+          userid: userId
+        }, function () {
+          console.log('Generated new userId:', userId);
+        });
+      }
+      resolve(userId);
+    });
+  });
+}
+function onWebsiteTimesUpdated(userId, callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
     var websites = [];
@@ -27867,15 +27878,6 @@ function onWebsiteTimesUpdated(callback) {
     console.log(websites);
     console.log(websiteTimeDict);
     callback(websiteTimeDict, websites);
-  });
-}
-function newTabToFirestore(data) {
-  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.addDoc)(colRef, {
-    websiteName: data.websiteName,
-    setActive: new Date(data.timestamp),
-    setIdle: null,
-    tabId: data.tabId,
-    userId: data.userId
   });
 }
 function endAllSessions() {
@@ -28044,113 +28046,65 @@ setInterval(function () {
     pendingTabData = null;
   }
 }, 5000);
-var userId = null;
-
-// creates unique user ID (see resources for the stack overflow article I got this function from)
-function getRandomToken() {
-  var randomPool = new Uint8Array(32);
-  crypto.getRandomValues(randomPool);
-  var hex = '';
-  for (var i = 0; i < randomPool.length; ++i) {
-    hex += randomPool[i].toString(16);
-  }
-  return hex;
-}
-chrome.storage.sync.get('userid', function (items) {
-  if (items.userid) {
-    userId = items.userid;
-    console.log('Using existing user ID:', userId);
-  } else {
-    userId = getRandomToken();
-    chrome.storage.sync.set({
-      userid: userId
-    }, function () {
-      console.log('Generated new userId:', userId);
-    });
-  }
-});
-
-// when the user becomes active, get the newly active tab and export to firebase with start time at that time
-chrome.tabs.onActivated.addListener(function (activeInfo) {
-  chrome.tabs.get(activeInfo.tabId, function (tab) {
-    if (!lastActiveTab || tab.id !== lastActiveTab.id) {
-      addOldTabToFirestore('User switched to a new tab, updating last active tab: ');
-      if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
-        var url = new URL(tab.url);
-        var websiteName = url.hostname.replace('www.', '');
-        var data = {
-          websiteName: websiteName,
-          timestamp: new Date(),
-          tabId: tab.id,
-          userId: userId
-        };
-        (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
-        lastActiveTab = tab;
-        lastActiveTabTimestamp = Date.now();
-        lastWindowId = tab.windowId;
-        console.log('Active tab updated:', lastActiveTab);
-      }
-    }
-  });
-});
-
-// when the user becomes idle, update the end date of the firebase entry for the last active tab (need to store somewhere)
-chrome.idle.onStateChanged.addListener(function (newState) {
-  if (newState === 'idle' || newState === 'locked') {
-    addOldTabToFirestore('User is idle, updating last active tab: ');
-    lastActiveTab = null;
-    lastActiveTabTimestamp = null;
-  }
-});
-chrome.runtime.onSuspend.addListener(function () {
-  addOldTabToFirestore('Extension is suspending, updating last active tab: ');
-  lastActiveTab = null;
-  lastActiveTabTimestamp = null;
-  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)();
-});
-chrome.windows.onFocusChanged.addListener(function (windowId) {
-  if (windowId === chrome.windows.WINDOW_ID_NONE) {
-    // User has switched to a different window or minimized the current one
-    addOldTabToFirestore('User switched to a different window or minimized, updating last active tab: ');
-    lastActiveTab = null;
-    lastActiveTabTimestamp = null;
-  } else {
-    // User has focused back on a window
-    chrome.tabs.query({
-      active: true,
-      windowId: windowId
-    }, function (tabs) {
-      if (tabs.length > 0) {
-        var _lastActiveTab;
-        var activeTab = tabs[0];
-        if (activeTab.id !== ((_lastActiveTab = lastActiveTab) === null || _lastActiveTab === void 0 ? void 0 : _lastActiveTab.id)) {
-          addOldTabToFirestore('User switched to a new window, updating last active tab: ');
-          lastActiveTab = activeTab;
-          lastActiveTabTimestamp = new Date();
+(0,_firestore__WEBPACK_IMPORTED_MODULE_0__.retrieveUserId)().then(function (userId) {
+  chrome.tabs.onActivated.addListener(function (activeInfo) {
+    chrome.tabs.get(activeInfo.tabId, function (tab) {
+      if (!lastActiveTab || tab.id !== lastActiveTab.id) {
+        addOldTabToFirestore('User switched to a new tab, updating last active tab: ');
+        if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+          var url = new URL(tab.url);
+          var websiteName = url.hostname.replace('www.', '');
+          var data = {
+            websiteName: websiteName,
+            timestamp: new Date(),
+            tabId: tab.id,
+            userId: userId
+          };
+          (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
+          lastActiveTab = tab;
+          lastActiveTabTimestamp = Date.now();
+          lastWindowId = tab.windowId;
+          console.log('Active tab updated:', lastActiveTab);
         }
       }
     });
-  }
-});
-function addOldTabToFirestore(message) {
-  if (lastActiveTab && lastActiveTab.url) {
-    var hostname;
-    try {
-      hostname = new URL(lastActiveTab.url).hostname.replace('www.', '');
-    } catch (e) {
-      console.warn('Error parsing URL:', lastActiveTab.url, e);
-      return;
+  });
+  chrome.idle.onStateChanged.addListener(function (newState) {
+    if (newState === 'idle' || newState === 'locked') {
+      addOldTabToFirestore('User is idle, updating last active tab: ');
+      lastActiveTab = null;
+      lastActiveTabTimestamp = null;
     }
-    var lastData = {
-      websiteName: hostname,
-      setIdle: new Date(),
-      tabId: lastActiveTab.id,
-      userId: userId
-    };
-    queueTabUpdate(lastData);
-    console.log(message, lastActiveTab);
-  }
-}
+  });
+  chrome.runtime.onSuspend.addListener(function () {
+    addOldTabToFirestore('Extension is suspending, updating last active tab: ');
+    lastActiveTab = null;
+    lastActiveTabTimestamp = null;
+    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)();
+  });
+  chrome.windows.onFocusChanged.addListener(function (windowId) {
+    if (windowId === chrome.windows.WINDOW_ID_NONE) {
+      addOldTabToFirestore('User switched to a different window or minimized, updating last active tab: ');
+      lastActiveTab = null;
+      lastActiveTabTimestamp = null;
+    } else {
+      chrome.tabs.query({
+        active: true,
+        windowId: windowId
+      }, function (tabs) {
+        if (tabs.length > 0) {
+          var _lastActiveTab;
+          var activeTab = tabs[0];
+          if (activeTab.id !== ((_lastActiveTab = lastActiveTab) === null || _lastActiveTab === void 0 ? void 0 : _lastActiveTab.id)) {
+            addOldTabToFirestore('User switched to a new window, updating last active tab: ');
+            lastActiveTab = activeTab;
+            lastActiveTabTimestamp = new Date();
+          }
+        }
+      });
+    }
+  });
+});
 })();
 
 /******/ })()

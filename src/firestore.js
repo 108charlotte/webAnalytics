@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, QuerySnapshot, orderBy, limit, getDocs, deleteDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, addDoc, updateDoc, orderBy, limit, getDocs, deleteDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-e_UcwoG3M3cA_3owudIPIgSyzoHNICA",
@@ -13,45 +13,48 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-console.log("Firebase initialized")
-
 const db = getFirestore()
-
-console.log("Firestore initialized")
-
 const colRef = collection(db, "website-times")
-
-console.log("Collection reference created")
-
-let websites = []
-const websiteTimeDict = {}
 
 export async function clearCollection(collectionName) {
   const colRef = collection(db, collectionName)
   const snapshot = await getDocs(colRef)
-  
   for (const docSnap of snapshot.docs) {
     await deleteDoc(doc(db, collectionName, docSnap.id))
   }
-
   console.log(`Cleared collection: ${collectionName}`)
 }
 
-let userId = null
+// --- Promise-based retrieveUserId ---
+function getRandomToken() {
+  var randomPool = new Uint8Array(32)
+  crypto.getRandomValues(randomPool)
+  var hex = ''
+  for (var i = 0; i < randomPool.length; ++i) {
+    hex += randomPool[i].toString(16)
+  }
+  return hex
+}
 
-chrome.storage.sync.get('userid', function(items) {
-    if (items.userid) {
+export function retrieveUserId() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get('userid', function(items) {
+      let userId
+      if (items.userid) {
         userId = items.userid
         console.log('Using existing user ID:', userId)
-    } else {
+      } else {
         userId = getRandomToken()
         chrome.storage.sync.set({userid: userId}, function() {
-            console.log('Generated new userId:', userId)
+          console.log('Generated new userId:', userId)
         })
-    }
-})
+      }
+      resolve(userId)
+    })
+  })
+}
 
-export function onWebsiteTimesUpdated(callback) {
+export function onWebsiteTimesUpdated(userId, callback) {
   onSnapshot(colRef, (snapshot) => {
     console.log("Snapshot received")
     let websites = []
@@ -74,16 +77,6 @@ export function onWebsiteTimesUpdated(callback) {
     console.log(websites)
     console.log(websiteTimeDict)
     callback(websiteTimeDict, websites)
-  })
-}
-
-export function newTabToFirestore(data) {
-  addDoc(colRef, {
-    websiteName: data.websiteName,
-    setActive: new Date(data.timestamp),
-    setIdle: null, 
-    tabId: data.tabId, 
-    userId: data.userId
   })
 }
 
@@ -112,7 +105,14 @@ export async function updateTabToFirestore(data) {
       console.log("User switched to a non-chrome tab or tab with no websiteName.")
       return
     }
-    const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("tabId", "==", data.tabId), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
+    const nearestIncompleteEntryWithSameName = query(
+      colRef,
+      where("websiteName", "==", data.websiteName),
+      where("tabId", "==", data.tabId),
+      where("setIdle", "==", null),
+      orderBy("setActive", "desc"),
+      limit(1)
+    )
     const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
     console.log("Query found", querySnapshot.size, "docs");
     if (!querySnapshot.empty) {

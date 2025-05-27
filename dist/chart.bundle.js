@@ -42848,8 +42848,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
 /* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
-/* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
+/* harmony export */   retrieveUserId: () => (/* binding */ retrieveUserId),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
 /* harmony export */ });
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/esm/index.esm.js");
@@ -42878,16 +42878,13 @@ var firebaseConfig = {
   measurementId: "G-2883329C3P"
 };
 (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.initializeApp)(firebaseConfig);
-console.log("Firebase initialized");
 var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getFirestore)();
-console.log("Firestore initialized");
 var colRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.collection)(db, "website-times");
-console.log("Collection reference created");
-var websites = [];
-var websiteTimeDict = {};
 function clearCollection(_x) {
   return _clearCollection.apply(this, arguments);
 }
+
+// --- Promise-based retrieveUserId ---
 function _clearCollection() {
   _clearCollection = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(collectionName) {
     var colRef, snapshot, _iterator, _step, docSnap;
@@ -42934,21 +42931,35 @@ function _clearCollection() {
   }));
   return _clearCollection.apply(this, arguments);
 }
-var userId = null;
-chrome.storage.sync.get('userid', function (items) {
-  if (items.userid) {
-    userId = items.userid;
-    console.log('Using existing user ID:', userId);
-  } else {
-    userId = getRandomToken();
-    chrome.storage.sync.set({
-      userid: userId
-    }, function () {
-      console.log('Generated new userId:', userId);
-    });
+function getRandomToken() {
+  var randomPool = new Uint8Array(32);
+  crypto.getRandomValues(randomPool);
+  var hex = '';
+  for (var i = 0; i < randomPool.length; ++i) {
+    hex += randomPool[i].toString(16);
   }
-});
-function onWebsiteTimesUpdated(callback) {
+  return hex;
+}
+function retrieveUserId() {
+  return new Promise(function (resolve) {
+    chrome.storage.sync.get('userid', function (items) {
+      var userId;
+      if (items.userid) {
+        userId = items.userid;
+        console.log('Using existing user ID:', userId);
+      } else {
+        userId = getRandomToken();
+        chrome.storage.sync.set({
+          userid: userId
+        }, function () {
+          console.log('Generated new userId:', userId);
+        });
+      }
+      resolve(userId);
+    });
+  });
+}
+function onWebsiteTimesUpdated(userId, callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
     var websites = [];
@@ -42972,15 +42983,6 @@ function onWebsiteTimesUpdated(callback) {
     console.log(websites);
     console.log(websiteTimeDict);
     callback(websiteTimeDict, websites);
-  });
-}
-function newTabToFirestore(data) {
-  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.addDoc)(colRef, {
-    websiteName: data.websiteName,
-    setActive: new Date(data.timestamp),
-    setIdle: null,
-    tabId: data.tabId,
-    userId: data.userId
   });
 }
 function endAllSessions() {
@@ -43341,20 +43343,26 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
   var clearButton = document.getElementById('clear-data-button');
-  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict, websites) {
-    updateChart(websiteTimeDict);
-    todayButton.addEventListener('click', function () {
-      updateChart(buildChartData(websites, 'today'));
+  var websitesCache = [];
+  var websiteTimeDictCache = {};
+  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.retrieveUserId)().then(function (userId) {
+    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(userId, function (websiteTimeDict, websites) {
+      websiteTimeDictCache = websiteTimeDict;
+      websitesCache = websites;
+      updateChart(websiteTimeDict);
     });
-    thisWeekButton.addEventListener('click', function () {
-      updateChart(buildChartData(websites, 'this-week'));
-    });
-    thisMonthButton.addEventListener('click', function () {
-      updateChart(buildChartData(websites, 'this-year'));
-    });
-    allTimeButton.addEventListener('click', function () {
-      updateChart(buildChartData(websites, 'all-time'));
-    });
+  });
+  todayButton.addEventListener('click', function () {
+    updateChart(buildChartData(websitesCache, 'today'));
+  });
+  thisWeekButton.addEventListener('click', function () {
+    updateChart(buildChartData(websitesCache, 'this-week'));
+  });
+  thisMonthButton.addEventListener('click', function () {
+    updateChart(buildChartData(websitesCache, 'this-year'));
+  });
+  allTimeButton.addEventListener('click', function () {
+    updateChart(buildChartData(websitesCache, 'all-time'));
   });
 
   // clear data (reset database from firestore)
