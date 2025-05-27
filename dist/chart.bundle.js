@@ -43222,9 +43222,6 @@ function onThisYear(date) {
   var today = new Date();
   return date.getFullYear() === today.getFullYear();
 }
-(0,_firestore__WEBPACK_IMPORTED_MODULE_0__.devDelete)("website-times").then(function () {
-  console.log("Dev delete completed");
-});
 
 // see resources for where I got this from (stack overflow)
 function onThisWeek(date) {
@@ -43406,6 +43403,9 @@ function updateChart(dict) {
   });
 }
 document.addEventListener('DOMContentLoaded', function () {
+  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.devDelete)("website-times").then(function () {
+    console.log("Dev delete completed");
+  });
   var todayButton = document.getElementById('today-button');
   var thisWeekButton = document.getElementById('this-week-button');
   var thisMonthButton = document.getElementById('this-year-button');

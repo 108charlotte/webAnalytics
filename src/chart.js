@@ -14,10 +14,6 @@ function onThisYear(date) {
     return date.getFullYear() === today.getFullYear()
 }
 
-devDelete("website-times").then(() => {
-    console.log("Dev delete completed")
-})
-
 // see resources for where I got this from (stack overflow)
 function onThisWeek(date, boundaryDay=0)
 {
@@ -181,6 +177,10 @@ function updateChart(dict) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    devDelete("website-times").then(() => {
+        console.log("Dev delete completed")
+    })
 
     const todayButton = document.getElementById('today-button')
     const thisWeekButton = document.getElementById('this-week-button')
