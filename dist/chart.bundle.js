@@ -43403,9 +43403,12 @@ function updateChart(dict) {
   });
 }
 document.addEventListener('DOMContentLoaded', function () {
-  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.devDelete)("website-times").then(function () {
-    console.log("Dev delete completed");
-  });
+  /* commented out for now, but can be used for development purposes
+  devDelete("website-times").then(() => {
+      console.log("Dev delete completed")
+  })
+  */
+
   var todayButton = document.getElementById('today-button');
   var thisWeekButton = document.getElementById('this-week-button');
   var thisMonthButton = document.getElementById('this-year-button');

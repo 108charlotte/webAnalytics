@@ -178,9 +178,11 @@ function updateChart(dict) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* commented out for now, but can be used for development purposes
     devDelete("website-times").then(() => {
         console.log("Dev delete completed")
     })
+    */
 
     const todayButton = document.getElementById('today-button')
     const thisWeekButton = document.getElementById('this-week-button')
