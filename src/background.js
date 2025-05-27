@@ -1,4 +1,4 @@
-import { newTabToFirestore, updateTabToFirestore } from "./firestore"
+import { newTabToFirestore, updateTabToFirestore, endAllSessions } from "./firestore"
 
 console.log('chrome.idle:', chrome.idle)
 
@@ -33,6 +33,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                 const data = {
                     websiteName,
                     timestamp: new Date(),
+                    tabId: tab.id, 
                 }
                 newTabToFirestore(data)
 
@@ -52,6 +53,11 @@ chrome.idle.onStateChanged.addListener((newState) => {
     }
 })
 
+chrome.runtime.onSuspend.addListener(() => {
+    addOldTabToFirestore('Extension is suspending, updating last active tab: ')
+    endAllSessions()
+})
+
 chrome.windows.onFocusChanged.addListener((windowId) => {
     if (windowId === chrome.windows.WINDOW_ID_NONE) {
         // User has switched to a different window or minimized the current one
@@ -60,6 +66,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
             const data = {
                 websiteName: lastTabUrl.hostname.replace('www.', ''),
                 setIdle: new Date(),
+                tabId: lastActiveTab.id,
             }
             queueTabUpdate(data)
             console.log('Window focus changed, updated tab:', lastActiveTab)
@@ -93,6 +100,7 @@ function addOldTabToFirestore(message) {
         const lastData = {
             websiteName: hostname,
             setIdle: new Date(),
+            tabId: lastActiveTab.id,
         };
         queueTabUpdate(lastData)
         console.log(message, lastActiveTab);

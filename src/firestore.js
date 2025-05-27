@@ -71,17 +71,36 @@ export function newTabToFirestore(data) {
   addDoc(colRef, {
     websiteName: data.websiteName,
     setActive: new Date(data.timestamp),
-    setIdle: null
+    setIdle: null, 
+    tabId: data.tabId
+  })
+}
+
+export function endAllSessions() {
+  const openSessionsQuery = query(colRef, where("setIdle", "==", null))
+  getDocs(openSessionsQuery).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const docRef = doc(db, "website-times", doc.id)
+      updateDoc(docRef, {
+        setIdle: new Date()
+      }).then(() => {
+        console.log("Updated entry with website name:", doc.data().websiteName)
+      }).catch((error) => {
+        console.error("Error updating document:", error)
+      })
+    })
+  }).catch((error) => {
+    console.error("Error getting documents:", error)
   })
 }
 
 export async function updateTabToFirestore(data) {
   try {
     if (!data.websiteName) {
-      console.log("User switched to a non-chrome tab or tab with no websiteName.");
-      return;
+      console.log("User switched to a non-chrome tab or tab with no websiteName.")
+      return
     }
-    const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
+    const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("tabId", "==", data.tabId), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
     const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
     if (!querySnapshot.empty) {
       const docToUpdate = querySnapshot.docs[0]

@@ -27742,6 +27742,7 @@ const unwrap = (value) => reverseTransformCache.get(value);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
+/* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
 /* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
@@ -27863,7 +27864,25 @@ function newTabToFirestore(data) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.addDoc)(colRef, {
     websiteName: data.websiteName,
     setActive: new Date(data.timestamp),
-    setIdle: null
+    setIdle: null,
+    tabId: data.tabId
+  });
+}
+function endAllSessions() {
+  var openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
+  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      var docRef = doc(db, "website-times", doc.id);
+      (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
+        setIdle: new Date()
+      }).then(function () {
+        console.log("Updated entry with website name:", doc.data().websiteName);
+      })["catch"](function (error) {
+        console.error("Error updating document:", error);
+      });
+    });
+  })["catch"](function (error) {
+    console.error("Error getting documents:", error);
   });
 }
 function updateTabToFirestore(_x2) {
@@ -27883,7 +27902,7 @@ function _updateTabToFirestore() {
           console.log("User switched to a non-chrome tab or tab with no websiteName.");
           return _context2.abrupt("return");
         case 4:
-          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
+          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("tabId", "==", data.tabId), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
           _context2.next = 7;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
         case 7:
@@ -28028,7 +28047,8 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
         var websiteName = url.hostname.replace('www.', '');
         var data = {
           websiteName: websiteName,
-          timestamp: new Date()
+          timestamp: new Date(),
+          tabId: tab.id
         };
         (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
         lastActiveTab = tab;
@@ -28046,6 +28066,10 @@ chrome.idle.onStateChanged.addListener(function (newState) {
     addOldTabToFirestore('User is idle, updating last active tab: ');
   }
 });
+chrome.runtime.onSuspend.addListener(function () {
+  addOldTabToFirestore('Extension is suspending, updating last active tab: ');
+  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.endAllSessions)();
+});
 chrome.windows.onFocusChanged.addListener(function (windowId) {
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     // User has switched to a different window or minimized the current one
@@ -28053,7 +28077,8 @@ chrome.windows.onFocusChanged.addListener(function (windowId) {
       var lastTabUrl = new URL(lastActiveTab.url);
       var data = {
         websiteName: lastTabUrl.hostname.replace('www.', ''),
-        setIdle: new Date()
+        setIdle: new Date(),
+        tabId: lastActiveTab.id
       };
       queueTabUpdate(data);
       console.log('Window focus changed, updated tab:', lastActiveTab);
@@ -28089,7 +28114,8 @@ function addOldTabToFirestore(message) {
     }
     var lastData = {
       websiteName: hostname,
-      setIdle: new Date()
+      setIdle: new Date(),
+      tabId: lastActiveTab.id
     };
     queueTabUpdate(lastData);
     console.log(message, lastActiveTab);

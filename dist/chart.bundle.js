@@ -42847,6 +42847,7 @@ const unwrap = (value) => reverseTransformCache.get(value);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
+/* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
 /* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
@@ -42968,7 +42969,25 @@ function newTabToFirestore(data) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.addDoc)(colRef, {
     websiteName: data.websiteName,
     setActive: new Date(data.timestamp),
-    setIdle: null
+    setIdle: null,
+    tabId: data.tabId
+  });
+}
+function endAllSessions() {
+  var openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
+  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery).then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      var docRef = doc(db, "website-times", doc.id);
+      (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
+        setIdle: new Date()
+      }).then(function () {
+        console.log("Updated entry with website name:", doc.data().websiteName);
+      })["catch"](function (error) {
+        console.error("Error updating document:", error);
+      });
+    });
+  })["catch"](function (error) {
+    console.error("Error getting documents:", error);
   });
 }
 function updateTabToFirestore(_x2) {
@@ -42988,7 +43007,7 @@ function _updateTabToFirestore() {
           console.log("User switched to a non-chrome tab or tab with no websiteName.");
           return _context2.abrupt("return");
         case 4:
-          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
+          nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("tabId", "==", data.tabId), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
           _context2.next = 7;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
         case 7:
