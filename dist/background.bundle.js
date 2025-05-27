@@ -28033,6 +28033,7 @@ setInterval(function () {
     pendingTabData = null;
   }
 }, 5000);
+var userId = null;
 
 // creates unique user ID (see resources for the stack overflow article I got this function from)
 function getRandomToken() {
@@ -28044,6 +28045,19 @@ function getRandomToken() {
   }
   return hex;
 }
+chrome.storage.sync.get('userid', function (items) {
+  if (items.userid) {
+    userId = items.userid;
+    console.log('Using existing user ID:', userId);
+  } else {
+    userId = getRandomToken();
+    chrome.storage.sync.set({
+      userid: userId
+    }, function () {
+      console.log('Generated new userId:', userId);
+    });
+  }
+});
 
 // when the user becomes active, get the newly active tab and export to firebase with start time at that time
 chrome.tabs.onActivated.addListener(function (activeInfo) {
@@ -28056,7 +28070,8 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
         var data = {
           websiteName: websiteName,
           timestamp: new Date(),
-          tabId: tab.id
+          tabId: tab.id,
+          userId: userId
         };
         (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
         lastActiveTab = tab;
@@ -28115,30 +28130,12 @@ function addOldTabToFirestore(message) {
       console.warn('Error parsing URL:', lastActiveTab.url, e);
       return;
     }
-
-    // also from stack overflow, this is how to use the token
-    chrome.storage.sync.get('userid', function (items) {
-      var userid = items.userid;
-      if (userid) {
-        useToken(userid);
-      } else {
-        userid = getRandomToken();
-        chrome.storage.sync.set({
-          userid: userid
-        }, function () {
-          useToken(userid);
-        });
-      }
-      function useToken(userid) {
-        console.log('Using user ID:', userid);
-        var lastData = {
-          websiteName: hostname,
-          setIdle: new Date(),
-          tabId: lastActiveTab.id,
-          userId: userid
-        };
-      }
-    });
+    var lastData = {
+      websiteName: hostname,
+      setIdle: new Date(),
+      tabId: lastActiveTab.id,
+      userId: userId
+    };
     queueTabUpdate(lastData);
     console.log(message, lastActiveTab);
   }
