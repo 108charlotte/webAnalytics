@@ -42971,7 +42971,7 @@ function newTabToFirestore(data) {
     setActive: new Date(data.timestamp),
     setIdle: null,
     tabId: data.tabId,
-    userId: userId || getRandomToken()
+    userId: data.userId
   });
 }
 function endAllSessions() {
