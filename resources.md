@@ -37,3 +37,5 @@ https://www.w3schools.com/html/html_css.asp#:~:text=CSS%20can%20be%20added%20to,
 https://www.shecodes.io/athena/43505-how-to-place-two-buttons-side-by-side-in-html-css
 
 checking if two days are on the same week: https://dev.to/mellen/dates-in-the-same-week-3ogg
+
+how to uniquely identify users: https://stackoverflow.com/questions/23822170/getting-unique-clientid-from-chrome-extension

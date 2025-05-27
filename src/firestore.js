@@ -72,7 +72,8 @@ export function newTabToFirestore(data) {
     websiteName: data.websiteName,
     setActive: new Date(data.timestamp),
     setIdle: null, 
-    tabId: data.tabId
+    tabId: data.tabId, 
+    userId: userId || getRandomToken()
   })
 }
 
