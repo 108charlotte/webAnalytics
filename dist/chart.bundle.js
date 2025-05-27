@@ -42848,6 +42848,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
 /* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
+/* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
 /* harmony export */   retrieveUserId: () => (/* binding */ retrieveUserId),
 /* harmony export */   updateTabToFirestore: () => (/* binding */ updateTabToFirestore)
@@ -42957,6 +42958,15 @@ function retrieveUserId() {
       }
       resolve(userId);
     });
+  });
+}
+function newTabToFirestore(data) {
+  (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.addDoc)(colRef, {
+    websiteName: data.websiteName,
+    setActive: new Date(data.timestamp),
+    setIdle: null,
+    tabId: data.tabId,
+    userId: data.userId
   });
 }
 function onWebsiteTimesUpdated(userId, callback) {

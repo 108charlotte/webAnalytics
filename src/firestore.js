@@ -54,6 +54,16 @@ export function retrieveUserId() {
   })
 }
 
+export function newTabToFirestore(data) {
+  addDoc(colRef, {
+    websiteName: data.websiteName,
+    setActive: new Date(data.timestamp),
+    setIdle: null, 
+    tabId: data.tabId, 
+    userId: data.userId
+  })
+}
+
 export function onWebsiteTimesUpdated(userId, callback) {
   onSnapshot(colRef, (snapshot) => {
     console.log("Snapshot received")
