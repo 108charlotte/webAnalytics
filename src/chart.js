@@ -72,25 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("One or more filter buttons not found.")
         return
     }
-        
 
     const ctx = canvas.getContext('2d')
     let chartInstance = null
     const clearButton = document.getElementById('clear-data-button')
 
-    onWebsiteTimesUpdated((websiteTimeDict) => {
+    onWebsiteTimesUpdated((websiteTimeDict, websites) => {
         let values = Object.values(websiteTimeDict)
 
         todayButton.addEventListener('click', () => {
-            values = Object.values(websiteTimeDict).filter(website => onToday(website.setActive.toDate()))
+            values = websites.filter(website => onToday(website.setActive.toDate()))
         })
 
         thisWeekButton.addEventListener('click', () => {
-            values = Object.values(websiteTimeDict).filter(website => onThisWeek(website.setActive.toDate()))
+            values = websites.filter(website => onThisWeek(website.setActive.toDate()))
         })
 
         thisMonthButton.addEventListener('click', () => {
-            values = Object.values(websiteTimeDict).filter(website => onThisYear(website.setActive.toDate()))
+            values = websites.filter(website => onThisYear(website.setActive.toDate()))
         })
 
         allTimeButton.addEventListener('click', () => {
@@ -120,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: Object.keys(websiteTimeDict),
             datasets: [{
             label: 'Minutes',
-            data: Object.values(websiteTimeDict),
+            data: values.map(v => v.setIdle ? Math.round((v.setIdle.toDate() - v.setActive.toDate()) / 1000 / 60) : 0),
             backgroundColor: [
                 '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
                 '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
@@ -138,8 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true }
         })}
     })
-
-    // button management
 
     // clear data (reset database from firestore)
     clearButton.addEventListener('click', async () => {

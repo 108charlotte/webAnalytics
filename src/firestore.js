@@ -46,22 +46,25 @@ export async function clearCollection(collectionName) {
 export function onWebsiteTimesUpdated(callback) {
   onSnapshot(colRef, (snapshot) => {
     console.log("Snapshot received")
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data()
-        const name = data.websiteName
-        let startDate = data.setActive.toDate()
-        let today = new Date()
-        let endDate = data.setIdle?.toDate()
-        if (endDate && startDate && endDate > startDate) {
-          let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
-          websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
-        }
-        websites.push({ ...doc.data(), id: doc.id })
-    })
+    let websites = [];
+    const websiteTimeDict = {};
+
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data()
+      const name = data.websiteName
+      let startDate = data.setActive.toDate()
+      let endDate = data.setIdle?.toDate()
+      if (endDate && startDate && endDate > startDate) {
+        let durationInMinutes = Math.round((endDate - startDate) / 1000 / 60)
+        websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes
+      }
+      websites.push({ ...data, id: doc.id })
+    });
+
     console.log(websites)
     console.log(websiteTimeDict)
-    callback(websiteTimeDict)
-  })
+    callback(websiteTimeDict, websites)
+  });
 }
 
 export function newTabToFirestore(data) {

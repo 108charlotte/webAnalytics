@@ -42943,24 +42943,25 @@ function _clearCollection() {
 function onWebsiteTimesUpdated(callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
+    var websites = [];
+    var websiteTimeDict = {};
     snapshot.docs.forEach(function (doc) {
       var _data$setIdle;
       var data = doc.data();
       var name = data.websiteName;
       var startDate = data.setActive.toDate();
-      var today = new Date();
       var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
       if (endDate && startDate && endDate > startDate) {
         var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
         websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
       }
-      websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
+      websites.push(_objectSpread(_objectSpread({}, data), {}, {
         id: doc.id
       }));
     });
     console.log(websites);
     console.log(websiteTimeDict);
-    callback(websiteTimeDict);
+    callback(websiteTimeDict, websites);
   });
 }
 function newTabToFirestore(data) {
@@ -43164,20 +43165,20 @@ document.addEventListener('DOMContentLoaded', function () {
   var ctx = canvas.getContext('2d');
   var chartInstance = null;
   var clearButton = document.getElementById('clear-data-button');
-  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict) {
+  (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict, websites) {
     var values = Object.values(websiteTimeDict);
     todayButton.addEventListener('click', function () {
-      values = Object.values(websiteTimeDict).filter(function (website) {
+      values = websites.filter(function (website) {
         return onToday(website.setActive.toDate());
       });
     });
     thisWeekButton.addEventListener('click', function () {
-      values = Object.values(websiteTimeDict).filter(function (website) {
+      values = websites.filter(function (website) {
         return onThisWeek(website.setActive.toDate());
       });
     });
     thisMonthButton.addEventListener('click', function () {
-      values = Object.values(websiteTimeDict).filter(function (website) {
+      values = websites.filter(function (website) {
         return onThisYear(website.setActive.toDate());
       });
     });
@@ -43207,7 +43208,9 @@ document.addEventListener('DOMContentLoaded', function () {
       labels: Object.keys(websiteTimeDict),
       datasets: [{
         label: 'Minutes',
-        data: Object.values(websiteTimeDict),
+        data: values.map(function (v) {
+          return v.setIdle ? Math.round((v.setIdle.toDate() - v.setActive.toDate()) / 1000 / 60) : 0;
+        }),
         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
       }]
     };
@@ -43224,8 +43227,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
-
-  // button management
 
   // clear data (reset database from firestore)
   clearButton.addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {

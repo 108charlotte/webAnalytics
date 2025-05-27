@@ -27906,24 +27906,25 @@ function _clearCollection() {
 function onWebsiteTimesUpdated(callback) {
   (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.onSnapshot)(colRef, function (snapshot) {
     console.log("Snapshot received");
+    var websites = [];
+    var websiteTimeDict = {};
     snapshot.docs.forEach(function (doc) {
       var _data$setIdle;
       var data = doc.data();
       var name = data.websiteName;
       var startDate = data.setActive.toDate();
-      var today = new Date();
       var endDate = (_data$setIdle = data.setIdle) === null || _data$setIdle === void 0 ? void 0 : _data$setIdle.toDate();
       if (endDate && startDate && endDate > startDate) {
         var durationInMinutes = Math.round((endDate - startDate) / 1000 / 60);
         websiteTimeDict[name] = (websiteTimeDict[name] || 0) + durationInMinutes;
       }
-      websites.push(_objectSpread(_objectSpread({}, doc.data()), {}, {
+      websites.push(_objectSpread(_objectSpread({}, data), {}, {
         id: doc.id
       }));
     });
     console.log(websites);
     console.log(websiteTimeDict);
-    callback(websiteTimeDict);
+    callback(websiteTimeDict, websites);
   });
 }
 function newTabToFirestore(data) {
