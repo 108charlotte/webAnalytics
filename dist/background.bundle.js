@@ -27896,45 +27896,47 @@ function _updateTabToFirestore() {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
+          console.log("Trying to update:", data.websiteName, data.tabId, data.setIdle);
           if (data.websiteName) {
-            _context2.next = 4;
+            _context2.next = 5;
             break;
           }
           console.log("User switched to a non-chrome tab or tab with no websiteName.");
           return _context2.abrupt("return");
-        case 4:
+        case 5:
           nearestIncompleteEntryWithSameName = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("websiteName", "==", data.websiteName), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("tabId", "==", data.tabId), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.orderBy)("setActive", "desc"), (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.limit)(1));
-          _context2.next = 7;
+          _context2.next = 8;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(nearestIncompleteEntryWithSameName);
-        case 7:
+        case 8:
           querySnapshot = _context2.sent;
+          console.log("Query found", querySnapshot.size, "docs");
           if (querySnapshot.empty) {
-            _context2.next = 15;
+            _context2.next = 17;
             break;
           }
           docToUpdate = querySnapshot.docs[0];
           docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.doc)(db, "website-times", docToUpdate.id);
           console.log("Found an entry to update with website name:", docToUpdate.data().websiteName);
-          _context2.next = 14;
+          _context2.next = 16;
           return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.updateDoc)(docRef, {
             setIdle: data.setIdle
           });
-        case 14:
+        case 16:
           console.log("Updated entry with website name:", docToUpdate.data().websiteName);
-        case 15:
-          _context2.next = 20;
-          break;
         case 17:
-          _context2.prev = 17;
+          _context2.next = 22;
+          break;
+        case 19:
+          _context2.prev = 19;
           _context2.t0 = _context2["catch"](0);
           if (_context2.t0.message && _context2.t0.message.includes("Function where() called with invalid data")) {
             console.log("User switched to a non-chrome tab or tab with no websiteName");
           }
-        case 20:
+        case 22:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 17]]);
+    }, _callee2, null, [[0, 19]]);
   }));
   return _updateTabToFirestore.apply(this, arguments);
 }

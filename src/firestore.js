@@ -97,12 +97,14 @@ export function endAllSessions() {
 
 export async function updateTabToFirestore(data) {
   try {
+    console.log("Trying to update:", data.websiteName, data.tabId, data.setIdle);
     if (!data.websiteName) {
       console.log("User switched to a non-chrome tab or tab with no websiteName.")
       return
     }
     const nearestIncompleteEntryWithSameName = query(colRef, where("websiteName", "==", data.websiteName), where("tabId", "==", data.tabId), where("setIdle", "==", null), orderBy("setActive", "desc"), limit(1))
     const querySnapshot = await getDocs(nearestIncompleteEntryWithSameName)
+    console.log("Query found", querySnapshot.size, "docs");
     if (!querySnapshot.empty) {
       const docToUpdate = querySnapshot.docs[0]
       const docRef = doc(db, "website-times", docToUpdate.id)
