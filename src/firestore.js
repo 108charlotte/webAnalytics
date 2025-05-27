@@ -151,3 +151,11 @@ export async function updateTabToFirestore(data) {
     }
   }
 }
+
+export async function logOpenSessions() {
+  const openSessionsQuery = query(colRef, where("setIdle", "==", null))
+  const querySnapshot = await getDocs(openSessionsQuery)
+  querySnapshot.forEach((doc) => {
+    console.log("Open session:", doc.data())
+  });
+}

@@ -1,4 +1,4 @@
-import { newTabToFirestore, updateTabToFirestore, endAllSessions, retrieveUserId } from "./firestore"
+import { newTabToFirestore, updateTabToFirestore, endAllSessions, retrieveUserId, logOpenSessions } from "./firestore"
 
 console.log('chrome.idle:', chrome.idle)
 chrome.idle.setDetectionInterval(60)
@@ -14,6 +14,7 @@ function queueTabUpdate(data) {
 
 setInterval(() => {
     if (pendingTabData) {
+        logOpenSessions()
         updateTabToFirestore(pendingTabData)
         pendingTabData = null
     }
@@ -33,6 +34,7 @@ retrieveUserId().then((userId) => {
                         tabId: tab.id, 
                         userId: userId
                     }
+                    console.log("Creating session:", data)
                     newTabToFirestore(data)
 
                     lastActiveTab = tab

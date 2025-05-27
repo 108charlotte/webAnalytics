@@ -27744,6 +27744,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   clearCollection: () => (/* binding */ clearCollection),
 /* harmony export */   devDelete: () => (/* binding */ devDelete),
 /* harmony export */   endAllSessions: () => (/* binding */ endAllSessions),
+/* harmony export */   logOpenSessions: () => (/* binding */ logOpenSessions),
 /* harmony export */   newTabToFirestore: () => (/* binding */ newTabToFirestore),
 /* harmony export */   onWebsiteTimesUpdated: () => (/* binding */ onWebsiteTimesUpdated),
 /* harmony export */   retrieveUserId: () => (/* binding */ retrieveUserId),
@@ -28020,6 +28021,31 @@ function _updateTabToFirestore() {
   }));
   return _updateTabToFirestore.apply(this, arguments);
 }
+function logOpenSessions() {
+  return _logOpenSessions.apply(this, arguments);
+}
+function _logOpenSessions() {
+  _logOpenSessions = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+    var openSessionsQuery, querySnapshot;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          openSessionsQuery = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.query)(colRef, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.where)("setIdle", "==", null));
+          _context4.next = 3;
+          return (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_1__.getDocs)(openSessionsQuery);
+        case 3:
+          querySnapshot = _context4.sent;
+          querySnapshot.forEach(function (doc) {
+            console.log("Open session:", doc.data());
+          });
+        case 5:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4);
+  }));
+  return _logOpenSessions.apply(this, arguments);
+}
 
 /***/ })
 
@@ -28111,6 +28137,7 @@ function queueTabUpdate(data) {
 }
 setInterval(function () {
   if (pendingTabData) {
+    (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.logOpenSessions)();
     (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.updateTabToFirestore)(pendingTabData);
     pendingTabData = null;
   }
@@ -28129,6 +28156,7 @@ setInterval(function () {
             tabId: tab.id,
             userId: userId
           };
+          console.log("Creating session:", data);
           (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.newTabToFirestore)(data);
           lastActiveTab = tab;
           lastActiveTabTimestamp = Date.now();
