@@ -131,10 +131,36 @@ function updateChart(dict) {
         label: unitLabel,
         data: displayValues,
         backgroundColor: [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-            '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384', 
-            '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-            '#FF9F40', '#C9CBCF', '#FF6384', '#36A2EB'
+            '#FF6384', // pink/red
+            '#36A2EB', // blue
+            '#FFCE56', // yellow
+            '#4BC0C0', // teal
+            '#9966FF', // purple
+            '#FF9F40', // orange
+            '#C9CBCF', // gray
+            '#2ecc40', // green
+            '#e74c3c', // bright red
+            '#f1c40f', // gold
+            '#1abc9c', // turquoise
+            '#8e44ad', // deep purple
+            '#34495e', // dark blue-gray
+            '#e67e22', // pumpkin orange
+            '#7f8c8d', // dark gray
+            '#00b894', // vivid green
+            '#fdcb6e', // light orange
+            '#d35400', // dark orange
+            '#6c5ce7', // indigo
+            '#00cec9', // cyan
+            '#b2bec3', // light gray
+            '#fab1a0', // light peach
+            '#636e72', // charcoal
+            '#81ecec', // light teal
+            '#ffeaa7', // pale yellow
+            '#a29bfe', // light purple
+            '#00bcd4', // blue cyan
+            '#ff7675', // light red
+            '#55efc4', // mint
+            '#fd79a8'  // hot pink
         ],
         }]
     }
