@@ -82,6 +82,8 @@ function buildChartData(websites, restriction) {
     return dict
 }
 
+let chartInstance = null
+
 function updateChart(dict) {
     const canvas = document.getElementById('acquisitions')
     
@@ -91,7 +93,6 @@ function updateChart(dict) {
     }
 
     const ctx = canvas.getContext('2d')
-    let chartInstance = null
     const clearButton = document.getElementById('clear-data-button')
 
     const values = Object.values(dict)
@@ -107,6 +108,10 @@ function updateChart(dict) {
             messageDiv.style.display = 'block'
             canvas.style.display = 'none'
             clearButton.style.display = 'none'
+        }
+        if (chartInstance) {
+            chartInstance.destroy()
+            chartInstance = null
         }
     } else {
         if (messageDiv) {
@@ -128,14 +133,14 @@ function updateChart(dict) {
     }
 
     if (chartInstance) {
-        chartInstance.data = data
-        chartInstance.update()
-    } else {
-        chartInstance = new Chart(ctx, {
+        chartInstance.destroy()
+    }
+
+    chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data, 
         options: { responsive: true }
-    })}
+    })
 }
 
 document.addEventListener('DOMContentLoaded', () => {

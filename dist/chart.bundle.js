@@ -43181,6 +43181,7 @@ function buildChartData(websites, restriction) {
   });
   return dict;
 }
+var chartInstance = null;
 function updateChart(dict) {
   var canvas = document.getElementById('acquisitions');
   if (!canvas) {
@@ -43188,7 +43189,6 @@ function updateChart(dict) {
     return;
   }
   var ctx = canvas.getContext('2d');
-  var chartInstance = null;
   var clearButton = document.getElementById('clear-data-button');
   var values = Object.values(dict);
   var minThreshold = 1;
@@ -43202,6 +43202,10 @@ function updateChart(dict) {
       messageDiv.style.display = 'block';
       canvas.style.display = 'none';
       clearButton.style.display = 'none';
+    }
+    if (chartInstance) {
+      chartInstance.destroy();
+      chartInstance = null;
     }
   } else {
     if (messageDiv) {
@@ -43219,17 +43223,15 @@ function updateChart(dict) {
     }]
   };
   if (chartInstance) {
-    chartInstance.data = data;
-    chartInstance.update();
-  } else {
-    chartInstance = new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart(ctx, {
-      type: 'doughnut',
-      data: data,
-      options: {
-        responsive: true
-      }
-    });
+    chartInstance.destroy();
   }
+  chartInstance = new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart(ctx, {
+    type: 'doughnut',
+    data: data,
+    options: {
+      responsive: true
+    }
+  });
 }
 document.addEventListener('DOMContentLoaded', function () {
   var todayButton = document.getElementById('today-button');
