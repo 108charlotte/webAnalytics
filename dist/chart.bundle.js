@@ -43148,6 +43148,80 @@ function onThisWeek(date) {
   }
   return false;
 }
+function buildChartData(websites, restriction) {
+  var filtered;
+  switch (restriction) {
+    case 'today':
+      filtered = websites.filter(function (w) {
+        return w.setActive && w.setActive.toDate && onToday(w.setActive.toDate());
+      });
+      break;
+    case 'this-week':
+      filtered = websites.filter(function (w) {
+        return w.setActive && w.setActive.toDate && onThisWeek(w.setActive.toDate());
+      });
+      break;
+    case 'this-year':
+      filtered = websites.filter(function (w) {
+        return w.setActive && w.setActive.toDate && onThisYear(w.setActive.toDate());
+      });
+      break;
+    case 'all-time':
+    default:
+      filtered = websites;
+  }
+  var dict = {};
+  filtered.forEach(function (w) {
+    if (w.setIdle && w.setActive) {
+      var minutes = Math.round((w.setIdle.toDate() - w.setActive.toDate()) / 1000 / 60);
+      if (minutes > 0) {
+        dict[w.websiteName] = (dict[w.websiteName] || 0) + minutes;
+      }
+    }
+  });
+  return dict;
+}
+function updateChart(dict) {
+  var minThreshold = 1;
+  var allTooSmall = values.length === 0 || values.every(function (v) {
+    return v < minThreshold;
+  });
+  var messageDiv = document.getElementById('chart-message');
+  if (allTooSmall) {
+    if (messageDiv) {
+      messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data";
+      messageDiv.style.display = 'block';
+      canvas.style.display = 'none';
+      clearButton.style.display = 'none';
+    }
+  } else {
+    if (messageDiv) {
+      messageDiv.style.display = 'none';
+      canvas.style.display = 'block';
+      clearButton.style.display = 'block';
+    }
+  }
+  var data = {
+    labels: Object.keys(dict),
+    datasets: [{
+      label: 'Minutes',
+      data: Object.values(dict),
+      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
+    }]
+  };
+  if (chartInstance) {
+    chartInstance.data = data;
+    chartInstance.update();
+  } else {
+    chartInstance = new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart(ctx, {
+      type: 'doughnut',
+      data: data,
+      options: {
+        responsive: true
+      }
+    });
+  }
+}
 document.addEventListener('DOMContentLoaded', function () {
   var canvas = document.getElementById('acquisitions');
   if (!canvas) {
@@ -43166,66 +43240,19 @@ document.addEventListener('DOMContentLoaded', function () {
   var chartInstance = null;
   var clearButton = document.getElementById('clear-data-button');
   (0,_firestore__WEBPACK_IMPORTED_MODULE_0__.onWebsiteTimesUpdated)(function (websiteTimeDict, websites) {
-    var values = Object.values(websiteTimeDict);
+    updateChart(websiteTimeDict);
     todayButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
-        return onToday(website.setActive.toDate());
-      });
+      updateChart(buildChartData(websites, 'today'));
     });
     thisWeekButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
-        return onThisWeek(website.setActive.toDate());
-      });
+      updateChart(buildChartData(websites, 'this-week'));
     });
     thisMonthButton.addEventListener('click', function () {
-      values = websites.filter(function (website) {
-        return onThisYear(website.setActive.toDate());
-      });
+      updateChart(buildChartData(websites, 'this-year'));
     });
     allTimeButton.addEventListener('click', function () {
-      values = Object.values(websiteTimeDict);
+      updateChart(buildChartData(websites, 'all-time'));
     });
-    var minThreshold = 1;
-    var allTooSmall = values.length === 0 || values.every(function (v) {
-      return v < minThreshold;
-    });
-    var messageDiv = document.getElementById('chart-message');
-    if (allTooSmall) {
-      if (messageDiv) {
-        messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data";
-        messageDiv.style.display = 'block';
-        canvas.style.display = 'none';
-        clearButton.style.display = 'none';
-      }
-    } else {
-      if (messageDiv) {
-        messageDiv.style.display = 'none';
-        canvas.style.display = 'block';
-        clearButton.style.display = 'block';
-      }
-    }
-    var data = {
-      labels: Object.keys(websiteTimeDict),
-      datasets: [{
-        label: 'Minutes',
-        data: values.map(function (v) {
-          return v.setIdle ? Math.round((v.setIdle.toDate() - v.setActive.toDate()) / 1000 / 60) : 0;
-        }),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384']
-      }]
-    };
-    if (chartInstance) {
-      chartInstance.data = data;
-      chartInstance.update();
-    } else {
-      chartInstance = new chart_js__WEBPACK_IMPORTED_MODULE_1__.Chart(ctx, {
-        type: 'doughnut',
-        data: data,
-        options: {
-          responsive: true
-        }
-      });
-    }
   });
 
   // clear data (reset database from firestore)

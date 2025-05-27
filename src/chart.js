@@ -54,6 +54,77 @@ function onThisWeek(date, boundaryDay=0)
     return false;
 }
 
+function buildChartData(websites, restriction) {
+    let filtered
+    switch (restriction) {
+        case 'today':
+            filtered = websites.filter(w => w.setActive && w.setActive.toDate && onToday(w.setActive.toDate()))
+            break;
+        case 'this-week':
+            filtered = websites.filter(w => w.setActive && w.setActive.toDate && onThisWeek(w.setActive.toDate()))
+            break;
+        case 'this-year':
+            filtered = websites.filter(w => w.setActive && w.setActive.toDate && onThisYear(w.setActive.toDate()))
+            break
+        case 'all-time':
+        default:
+            filtered = websites
+    }
+    const dict = {}
+    filtered.forEach(w => {
+        if (w.setIdle && w.setActive) {
+            const minutes = Math.round((w.setIdle.toDate() - w.setActive.toDate()) / 1000 / 60)
+            if (minutes > 0) {
+                dict[w.websiteName] = (dict[w.websiteName] || 0) + minutes
+            }
+        }
+    })
+    return dict
+}
+
+function updateChart(dict) {
+    const minThreshold = 1
+
+    const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
+    const messageDiv = document.getElementById('chart-message')
+
+    if (allTooSmall) {
+        if (messageDiv) {
+            messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data"
+            messageDiv.style.display = 'block'
+            canvas.style.display = 'none'
+            clearButton.style.display = 'none'
+        }
+    } else {
+        if (messageDiv) {
+            messageDiv.style.display = 'none'
+            canvas.style.display = 'block'
+            clearButton.style.display = 'block'
+        }
+    }
+    const data = {
+        labels: Object.keys(dict),
+        datasets: [{
+        label: 'Minutes',
+        data: Object.values(dict),
+        backgroundColor: [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+            '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
+        ],
+        }]
+    }
+
+    if (chartInstance) {
+        chartInstance.data = data
+        chartInstance.update()
+    } else {
+        chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data, 
+        options: { responsive: true }
+    })}
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('acquisitions')
     
@@ -61,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Canvas element with id 'acquisitions' not found.")
         return
     }
-
 
     const todayButton = document.getElementById('today-button')
     const thisWeekButton = document.getElementById('this-week-button')
@@ -78,64 +148,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearButton = document.getElementById('clear-data-button')
 
     onWebsiteTimesUpdated((websiteTimeDict, websites) => {
-        let values = Object.values(websiteTimeDict)
+        updateChart(websiteTimeDict)
 
         todayButton.addEventListener('click', () => {
-            values = websites.filter(website => onToday(website.setActive.toDate()))
+            updateChart(buildChartData(websites, 'today'))
         })
 
         thisWeekButton.addEventListener('click', () => {
-            values = websites.filter(website => onThisWeek(website.setActive.toDate()))
+            updateChart(buildChartData(websites, 'this-week'))
         })
 
         thisMonthButton.addEventListener('click', () => {
-            values = websites.filter(website => onThisYear(website.setActive.toDate()))
+            updateChart(buildChartData(websites, 'this-year'))
         })
 
         allTimeButton.addEventListener('click', () => {
-            values = Object.values(websiteTimeDict)
+            updateChart(buildChartData(websites, 'all-time'))
         })
-
-        const minThreshold = 1
-
-        const allTooSmall = values.length === 0 || values.every(v => v < minThreshold)
-        const messageDiv = document.getElementById('chart-message')
-
-        if (allTooSmall) {
-            if (messageDiv) {
-                messageDiv.textContent = "No data to display yet; please spend at least 1 minute on a website to see your data"
-                messageDiv.style.display = 'block'
-                canvas.style.display = 'none'
-                clearButton.style.display = 'none'
-            }
-        } else {
-            if (messageDiv) {
-                messageDiv.style.display = 'none'
-                canvas.style.display = 'block'
-                clearButton.style.display = 'block'
-            }
-        }
-        const data = {
-            labels: Object.keys(websiteTimeDict),
-            datasets: [{
-            label: 'Minutes',
-            data: values.map(v => v.setIdle ? Math.round((v.setIdle.toDate() - v.setActive.toDate()) / 1000 / 60) : 0),
-            backgroundColor: [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
-            ],
-            }]
-        }
-
-        if (chartInstance) {
-            chartInstance.data = data
-            chartInstance.update()
-        } else {
-            chartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data, 
-            options: { responsive: true }
-        })}
     })
 
     // clear data (reset database from firestore)
