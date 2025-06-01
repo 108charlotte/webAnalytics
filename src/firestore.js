@@ -11,7 +11,7 @@ const firebaseConfig = {
   measurementId: "G-2883329C3P"
 }
 
-initializeApp(firebaseConfig);
+initializeApp(firebaseConfig)
 
 const db = getFirestore()
 const colRef = collection(db, "website-times")
