@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Web Analytics",
   "description": "Tracks time spent on websites to provide insights into web usage patterns.",
-  "version": "1.0",
+  "version": "1.0.1",
 
   "permissions": [
     "tabs",
